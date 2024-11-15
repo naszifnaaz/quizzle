@@ -5,6 +5,7 @@ import {
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
 import { NavBar } from "./shared/navbar";
+import { Link } from "react-router-dom";
 
 export default function QuizBuilderLandingPage() {
   return (
@@ -21,9 +22,12 @@ export default function QuizBuilderLandingPage() {
               sharing them with the world, and testing knowledge on any topic.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
-                Get Started
-              </button>
+              <Link to={"/console"}>
+                <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                  Get Started
+                </button>
+              </Link>
+
               <button className="border border-blue-600 text-blue-600 px-6 py-3 rounded-lg font-semibold hover:bg-blue-50 transition duration-300">
                 Learn More
               </button>
@@ -77,9 +81,11 @@ export default function QuizBuilderLandingPage() {
                   and interactive quizzes on any topic. Add images, set time
                   limits, and choose from various question types.
                 </p>
-                <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
-                  Start Creating
-                </button>
+                <Link to={"/console"}>
+                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                    Start Creating
+                  </button>
+                </Link>
               </div>
               <div className="bg-gray-100 rounded-lg p-6">
                 <div className="space-y-4">

@@ -4,6 +4,12 @@ import {
   CheckCircleIcon,
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  UserButton,
+} from "@clerk/clerk-react";
 
 export default function QuizBuilderLandingPage() {
   return (
@@ -14,14 +20,16 @@ export default function QuizBuilderLandingPage() {
             <PlusCircleIcon className="h-8 w-8 mr-2" />
             Quizzle
           </a>
-          <nav className="flex gap-6">
-            <a href="#" className="hover:underline">
-              Sign In
-            </a>
-            <a href="#" className="hover:underline">
-              Register
-            </a>
-          </nav>
+          <div className="flex gap-6">
+            <header>
+              <SignedOut>
+                <SignInButton />
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </header>
+          </div>
         </div>
       </header>
 

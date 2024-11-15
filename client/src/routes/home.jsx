@@ -4,35 +4,12 @@ import {
   CheckCircleIcon,
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
-import {
-  SignedIn,
-  SignedOut,
-  SignInButton,
-  UserButton,
-} from "@clerk/clerk-react";
+import { NavBar } from "./shared/navbar";
 
 export default function QuizBuilderLandingPage() {
   return (
     <div className="flex flex-col min-h-screen">
-      <header className="py-4 px-8 border-b border-gray-200">
-        <div className="flex justify-between items-center">
-          <a href="#" className="text-2xl font-bold flex items-center">
-            <PlusCircleIcon className="h-8 w-8 mr-2" />
-            Quizzle
-          </a>
-          <div className="flex gap-6">
-            <header>
-              <SignedOut>
-                <SignInButton />
-              </SignedOut>
-              <SignedIn>
-                <UserButton />
-              </SignedIn>
-            </header>
-          </div>
-        </div>
-      </header>
-
+      <NavBar />
       <main className="flex-1">
         <section className="py-20 px-4">
           <div className="max-w-6xl mx-auto text-center">

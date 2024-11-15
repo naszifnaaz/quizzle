@@ -1,3 +1,5 @@
+// Mongo Atlas integration with mongoose ORM
+
 const mongoose = require("mongoose");
 require("dotenv").config();
 

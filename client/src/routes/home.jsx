@@ -40,7 +40,7 @@ export default function QuizBuilderLandingPage() {
               Create, Share, and Take Quizzes with Ease
             </h1>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              QuizCraft is the ultimate platform for creating engaging quizzes,
+              Quizzle is the ultimate platform for creating engaging quizzes,
               sharing them with the world, and testing knowledge on any topic.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
@@ -153,7 +153,7 @@ export default function QuizBuilderLandingPage() {
                 <div className="flex">
                   <input
                     type="text"
-                    value="https://quizcraft.com/your-awesome-quiz"
+                    value="https://quizzle.com/your-awesome-quiz"
                     readOnly
                     className="flex-grow p-2 border border-gray-300 rounded-l"
                   />
@@ -216,7 +216,7 @@ export default function QuizBuilderLandingPage() {
             </h2>
             <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
               Join thousands of educators, trainers, and curious minds who are
-              already using QuizCraft to create and share knowledge.
+              already using Quizzle to create and share knowledge.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
@@ -234,7 +234,7 @@ export default function QuizBuilderLandingPage() {
       <footer className="py-6 px-4 border-t border-gray-200">
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center">
           <p className="text-sm text-gray-500 mb-4 sm:mb-0">
-            © 2024 QuizCraft. All rights reserved.
+            © 2024 Quizzle. All rights reserved.
           </p>
           <div className="flex gap-6">
             <a href="#" className="text-sm text-gray-500 hover:underline">

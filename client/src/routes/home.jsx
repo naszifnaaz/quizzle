@@ -182,9 +182,11 @@ export default function QuizBuilderLandingPage() {
                         ? "Challenge yourself with questions about world history."
                         : "How well do you know movies, music, and celebrities?"}
                     </p>
-                    <button className="w-full bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700 transition duration-300">
-                      Start Quiz
-                    </button>
+                    <Link to={"/quiz"}>
+                      <button className="w-full bg-blue-600 text-white px-4 py-2 rounded font-semibold hover:bg-blue-700 transition duration-300">
+                        Start Quiz
+                      </button>
+                    </Link>
                   </div>
                 )
               )}

@@ -4,6 +4,8 @@ import {
   ClockIcon,
 } from "@heroicons/react/24/outline";
 
+import { Link } from "react-router-dom";
+
 export default function QuizCard({ quiz }) {
   return (
     <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg">
@@ -37,9 +39,11 @@ export default function QuizCard({ quiz }) {
           >
             {quiz.status}
           </span>
-          <button className="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out transform hover:scale-110">
-            View Details
-          </button>
+          <Link to={`/quiz/${quiz.id}`}>
+            <button className="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out transform hover:scale-110">
+              View Details
+            </button>
+          </Link>
         </div>
       </div>
     </div>

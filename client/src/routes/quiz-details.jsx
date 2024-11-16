@@ -85,7 +85,7 @@ export default function QuizDetails() {
           className="flex items-center text-blue-600 hover:text-blue-800 mb-6"
         >
           <ArrowLeftIcon className="h-5 w-5 mr-2" />
-          Back to Quiz Details
+          Back to Dashboard
         </Link>
         <h2 className="text-3xl font-bold text-gray-900 mb-6">{quiz.title}</h2>
         <div className="bg-white shadow-md rounded-lg p-6 mb-8">

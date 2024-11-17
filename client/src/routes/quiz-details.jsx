@@ -7,7 +7,7 @@ import {
   EyeIcon,
   ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
-import { NavBar } from "./shared/navbar";
+import { NavBar } from "../components/shared/navbar";
 
 const participants = [
   { username: "user1", score: 8, timeTaken: 15 },

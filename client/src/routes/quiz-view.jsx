@@ -7,7 +7,9 @@ import {
   CheckIcon,
   QuestionMarkCircleIcon,
   BookOpenIcon,
+  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
+import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
 
 // Mock quiz data
 const quizData = {
@@ -60,20 +62,22 @@ export default function QuizView() {
   const [timeLeft, setTimeLeft] = useState(quizData.timeLimit * 60);
   const [quizStarted, setQuizStarted] = useState(false);
   const [showFeedback, setShowFeedback] = useState({});
+  const [quizStartTime, setQuizStartTime] = useState(null);
 
   useEffect(() => {
-    if (quizStarted && timeLeft > 0) {
+    if (quizStarted && !showResults && timeLeft > 0) {
       const timer = setTimeout(() => setTimeLeft(timeLeft - 1), 1000);
       return () => clearTimeout(timer);
     } else if (timeLeft === 0) {
       handleSubmitQuiz();
     }
-  }, [timeLeft, quizStarted]);
+  }, [timeLeft, quizStarted, showResults]);
 
   const handleStartQuiz = (e) => {
     e.preventDefault();
     if (username.trim()) {
       setQuizStarted(true);
+      setQuizStartTime(Date.now());
     }
   };
 
@@ -91,7 +95,6 @@ export default function QuizView() {
         } else {
           newAnswers = [...currentAnswers, answerId];
         }
-        // Show feedback if all correct answers are selected
         if (newAnswers.length === question.correctAnswers.length) {
           setShowFeedback((prevFeedback) => ({
             ...prevFeedback,
@@ -135,6 +138,17 @@ export default function QuizView() {
     });
     setUserAnswers(allAnswers);
     setShowResults(true);
+    const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
+    setTimeLeft(timeTaken); // Set the final time taken
+  };
+
+  const handleRetryQuiz = () => {
+    setCurrentQuestion(0);
+    setUserAnswers({});
+    setShowResults(false);
+    setTimeLeft(quizData.timeLimit * 60);
+    setShowFeedback({});
+    setQuizStartTime(Date.now());
   };
 
   const formatTime = (seconds) => {
@@ -202,18 +216,81 @@ export default function QuizView() {
       return acc + (isCorrect ? 1 : 0);
     }, 0);
 
+    const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
+    const correctAnswers = score;
+    const incorrectAnswers = quizData.questions.length - score;
+
+    const pieChartData = [
+      { name: "Correct", value: correctAnswers, color: "#4CAF50" },
+      { name: "Incorrect", value: incorrectAnswers, color: "#F44336" },
+    ];
+
     return (
       <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-          <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+        <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl">
+          <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">
             Quiz Results
           </h1>
-          <p className="text-lg text-center mb-4">
-            {username}, your score is:{" "}
-            <span className="font-bold text-blue-600">{score}</span> out of{" "}
-            {quizData.questions.length}
-          </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
+            <div>
+              <h2 className="text-xl font-semibold mb-4">
+                Performance Statistics
+              </h2>
+              <div className="space-y-2">
+                <p className="flex items-center">
+                  <UserIcon className="h-5 w-5 mr-2 text-blue-500" />
+                  <span className="font-medium">Username:</span>
+                  <span className="ml-2">{username}</span>
+                </p>
+                <p className="flex items-center">
+                  <CheckIcon className="h-5 w-5 mr-2 text-green-500" />
+                  <span className="font-medium">Score:</span>
+                  <span className="ml-2">
+                    {score} out of {quizData.questions.length}
+                  </span>
+                </p>
+                <p className="flex items-center">
+                  <ClockIcon className="h-5 w-5 mr-2 text-purple-500" />
+                  <span className="font-medium">Time Taken:</span>
+                  <span className="ml-2">{formatTime(timeTaken)}</span>
+                </p>
+                <p className="flex items-center">
+                  <QuestionMarkCircleIcon className="h-5 w-5 mr-2 text-yellow-500" />
+                  <span className="font-medium">Correct Answers:</span>
+                  <span className="ml-2">{correctAnswers}</span>
+                </p>
+                <p className="flex items-center">
+                  <QuestionMarkCircleIcon className="h-5 w-5 mr-2 text-red-500" />
+                  <span className="font-medium">Incorrect Answers:</span>
+                  <span className="ml-2">{incorrectAnswers}</span>
+                </p>
+              </div>
+            </div>
+            <div>
+              <h2 className="text-xl font-semibold mb-4">Score Distribution</h2>
+              <ResponsiveContainer width="100%" height={200}>
+                <PieChart>
+                  <Pie
+                    data={pieChartData}
+                    cx="50%"
+                    cy="50%"
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                    label={({ name, percent }) =>
+                      `${name} ${(percent * 100).toFixed(0)}%`
+                    }
+                  >
+                    {pieChartData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
           <div className="space-y-4">
+            <h2 className="text-xl font-semibold">Detailed Answers</h2>
             {quizData.questions.map((question, index) => {
               const userAnswer = userAnswers[question.id] || [];
               const isCorrect =
@@ -250,6 +327,40 @@ export default function QuizView() {
                 </div>
               );
             })}
+          </div>
+          {score / quizData.questions.length < 0.6 && (
+            <div className="mt-8 p-4 bg-yellow-100 rounded-md">
+              <h3 className="text-lg font-semibold mb-2">Need to improve?</h3>
+              <p className="mb-2">
+                Here are some resources to help you prepare better:
+              </p>
+              <ul className="list-disc list-inside">
+                <li>
+                  <a href="#" className="text-blue-600 hover:underline">
+                    JavaScript Fundamentals Course
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-600 hover:underline">
+                    MDN Web Docs: JavaScript Guide
+                  </a>
+                </li>
+                <li>
+                  <a href="#" className="text-blue-600 hover:underline">
+                    JavaScript: Understanding the Weird Parts
+                  </a>
+                </li>
+              </ul>
+            </div>
+          )}
+          <div className="mt-8 flex justify-center">
+            <button
+              onClick={handleRetryQuiz}
+              className="flex items-center px-6 py-3 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
+            >
+              <ArrowPathIcon className="h-5 w-5 mr-2" />
+              Retry Quiz
+            </button>
           </div>
         </div>
       </div>

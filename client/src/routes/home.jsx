@@ -4,7 +4,7 @@ import {
   CheckCircleIcon,
   ArrowRightIcon,
 } from "@heroicons/react/24/outline";
-import { NavBar } from "./shared/navbar";
+import { NavBar } from "../components/shared/navbar";
 import { Link } from "react-router-dom";
 
 export default function QuizBuilderLandingPage() {

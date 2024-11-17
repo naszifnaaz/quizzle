@@ -4,7 +4,7 @@ import {
   XCircleIcon,
   ArrowLeftIcon,
 } from "@heroicons/react/24/solid";
-import { NavBar } from "./shared/navbar";
+import { NavBar } from "../components/shared/navbar";
 
 const mockReport = {
   username: "user1",

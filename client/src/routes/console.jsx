@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import QuizCard from "./quiz-card";
-import CreateQuizSlider from "./create";
-import { NavBar } from "./shared/navbar";
+import QuizCard from "../components/quiz-card";
+import CreateQuizSlider from "../components/create";
+import { NavBar } from "../components/shared/navbar";
 
 const quizzes = [
   {

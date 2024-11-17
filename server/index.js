@@ -6,7 +6,7 @@ app.use(express.json());
 const cors = require("cors");
 app.use(cors());
 const helmet = require("helmet");
-const connect = require("./configs/db");
+const connect = require("./src/configs/db");
 app.use(helmet());
 
 app.listen(8080, () => {

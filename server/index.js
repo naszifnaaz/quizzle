@@ -1,5 +1,4 @@
 // express server config
-
 const express = require("express");
 const app = express();
 app.use(express.json());
@@ -8,6 +7,9 @@ app.use(cors());
 const helmet = require("helmet");
 const connect = require("./src/configs/db");
 app.use(helmet());
+
+const webhookRoutes = require("./src/routes/webhook.router");
+app.use("/webhooks", webhookRoutes);
 
 app.listen(8080, () => {
   console.log("Listening on port 8080...");

@@ -22,7 +22,7 @@ export default function QuizBuilderLandingPage() {
               sharing them with the world, and testing knowledge on any topic.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
-              <Link to={"/console"}>
+              <Link to={"/dashboard"}>
                 <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
                   Get Started
                 </button>

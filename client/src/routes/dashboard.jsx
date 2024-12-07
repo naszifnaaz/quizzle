@@ -1,10 +1,12 @@
 import { useState } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import QuizCard from "../components/quiz-card";
+import ParticipatedQuizCard from "../components/participated-quiz-card";
 import CreateQuizSlider from "../components/create";
 import { NavBar } from "../components/shared/navbar";
+import ToggleButton from "../components/toggle-button";
 
-const quizzes = [
+const createdQuizzes = [
   {
     id: 1,
     title: "JavaScript Basics",
@@ -55,8 +57,45 @@ const quizzes = [
   },
 ];
 
+const participatedQuizzes = [
+  {
+    id: 1,
+    title: "Web Development Fundamentals",
+    questions: 20,
+    participants: 300,
+    status: "Completed",
+    timeLimit: 40,
+    score: 85,
+    timeTaken: 35,
+    completedDate: "2023-06-15",
+  },
+  {
+    id: 2,
+    title: "Advanced JavaScript Concepts",
+    questions: 25,
+    participants: 150,
+    status: "Completed",
+    timeLimit: 50,
+    score: 92,
+    timeTaken: 45,
+    completedDate: "2023-06-20",
+  },
+  {
+    id: 3,
+    title: "UI/UX Design Principles",
+    questions: 15,
+    participants: 200,
+    status: "Completed",
+    timeLimit: 30,
+    score: 78,
+    timeTaken: 28,
+    completedDate: "2023-06-25",
+  },
+];
+
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
+  const [showCreated, setShowCreated] = useState(true);
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -73,10 +112,23 @@ function Dashboard() {
           </button>
         </div>
 
+        <div className="mb-6">
+          <ToggleButton
+            leftOption="Created"
+            rightOption="Participated"
+            isLeftSelected={showCreated}
+            onToggle={() => setShowCreated(!showCreated)}
+          />
+        </div>
+
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          {quizzes.map((quiz) => (
-            <QuizCard key={quiz.id} quiz={quiz} />
-          ))}
+          {showCreated
+            ? createdQuizzes.map((quiz) => (
+                <QuizCard key={quiz.id} quiz={quiz} />
+              ))
+            : participatedQuizzes.map((quiz) => (
+                <ParticipatedQuizCard key={quiz.id} quiz={quiz} />
+              ))}
         </div>
       </main>
 

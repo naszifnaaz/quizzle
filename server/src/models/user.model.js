@@ -5,8 +5,18 @@ const userSchema = new mongoose.Schema(
     clerkId: { type: String, required: true, unique: true },
     email: { type: String, required: true },
     name: { type: String, required: true },
-    // created quizzes
-    // attempted quizzes
+    createdQuizzes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Quiz",
+      },
+    ],
+    attemptedQuizzes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attempt",
+      },
+    ],
   },
   {
     timestamps: true,

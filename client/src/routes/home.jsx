@@ -81,7 +81,7 @@ export default function QuizBuilderLandingPage() {
                   and interactive quizzes on any topic. Add images, set time
                   limits, and choose from various question types.
                 </p>
-                <Link to={"/console"}>
+                <Link to={"/dashboard"}>
                   <button className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
                     Start Creating
                   </button>

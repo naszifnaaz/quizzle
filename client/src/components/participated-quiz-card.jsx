@@ -6,45 +6,51 @@ import {
   CalendarIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 
 export default function ParticipatedQuizCard({ quiz }) {
   return (
-    <div className="bg-white rounded-xl shadow-md overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-lg">
+    <motion.div
+      whileHover={{ scale: 1.05 }}
+      className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg overflow-hidden"
+    >
       <div className="p-6">
-        <h3 className="text-xl font-semibold text-gray-900 mb-3">
-          {quiz.title}
-        </h3>
-        <div className="flex flex-col space-y-2 text-sm text-gray-600">
+        <h3 className="text-xl font-semibold text-white mb-3">{quiz.title}</h3>
+        <div className="flex flex-col space-y-2 text-sm text-gray-300">
           <div className="flex items-center">
-            <DocumentTextIcon className="h-5 w-5 mr-2 text-blue-500" />
+            <DocumentTextIcon className="h-5 w-5 mr-2 text-blue-400" />
             <span>{quiz.questions} Questions</span>
           </div>
           <div className="flex items-center">
-            <ChartBarIcon className="h-5 w-5 mr-2 text-orange-500" />
+            <ChartBarIcon className="h-5 w-5 mr-2 text-orange-400" />
             <span>Score: {quiz.score}%</span>
           </div>
           <div className="flex items-center">
-            <ClockIcon className="h-5 w-5 mr-2 text-purple-500" />
+            <ClockIcon className="h-5 w-5 mr-2 text-purple-400" />
             <span>Time Taken: {quiz.timeTaken} minutes</span>
           </div>
           <div className="flex items-center">
-            <CalendarIcon className="h-5 w-5 mr-2 text-green-500" />
+            <CalendarIcon className="h-5 w-5 mr-2 text-green-400" />
             <span>Completed on: {quiz.completedDate}</span>
           </div>
         </div>
       </div>
-      <div className="bg-gray-50 px-6 py-4">
+      <div className="bg-white bg-opacity-5 px-6 py-4">
         <div className="flex justify-between items-center">
-          <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-100 text-blue-800">
+          <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-400 bg-opacity-20 text-blue-200">
             Completed
           </span>
           <Link to={`/report/1/user1`}>
-            <button className="text-blue-600 hover:text-blue-800 font-semibold transition duration-300 ease-in-out transform hover:scale-110">
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="text-blue-400 hover:text-blue-300 font-semibold transition duration-300 ease-in-out"
+            >
               View Results
-            </button>
+            </motion.button>
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

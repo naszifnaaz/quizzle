@@ -1,10 +1,13 @@
-import { useState } from "react";
+"use client";
+
+import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import QuizCard from "../components/quiz-card";
 import ParticipatedQuizCard from "../components/participated-quiz-card";
 import CreateQuizSlider from "../components/create";
 import { NavBar } from "../components/shared/navbar";
 import ToggleButton from "../components/toggle-button";
+import { motion } from "framer-motion";
 
 const createdQuizzes = [
   {
@@ -97,39 +100,89 @@ function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
   const [showCreated, setShowCreated] = useState(true);
 
+  useEffect(() => {
+    // Add a class to the body for global styles
+    document.body.classList.add(
+      "bg-gradient-to-br",
+      "from-indigo-900",
+      "to-purple-900",
+      "text-white"
+    );
+
+    return () => {
+      document.body.classList.remove(
+        "bg-gradient-to-br",
+        "from-indigo-900",
+        "to-purple-900",
+        "text-white"
+      );
+    };
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gray-100">
+    <div className="min-h-screen overflow-hidden">
       <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h2 className="text-3xl font-bold text-gray-900">My Quizzes</h2>
+        <motion.div
+          initial={{ opacity: 0, y: -20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className="flex justify-between items-center mb-8"
+        >
+          <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
+            My Quizzes
+          </h2>
           <button
             onClick={() => setIsCreateQuizOpen(true)}
-            className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300 flex items-center shadow-md hover:shadow-lg"
+            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 flex items-center shadow-lg hover:shadow-xl transform hover:scale-105"
           >
             <PlusCircleIcon className="h-5 w-5 mr-2" />
             Create New Quiz
           </button>
-        </div>
+        </motion.div>
 
-        <div className="mb-6">
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mb-6"
+        >
           <ToggleButton
             leftOption="Created"
             rightOption="Participated"
             isLeftSelected={showCreated}
             onToggle={() => setShowCreated(!showCreated)}
           />
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
           {showCreated
-            ? createdQuizzes.map((quiz) => (
-                <QuizCard key={quiz.id} quiz={quiz} />
+            ? createdQuizzes.map((quiz, index) => (
+                <motion.div
+                  key={quiz.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <QuizCard quiz={quiz} />
+                </motion.div>
               ))
-            : participatedQuizzes.map((quiz) => (
-                <ParticipatedQuizCard key={quiz.id} quiz={quiz} />
+            : participatedQuizzes.map((quiz, index) => (
+                <motion.div
+                  key={quiz.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <ParticipatedQuizCard quiz={quiz} />
+                </motion.div>
               ))}
-        </div>
+        </motion.div>
       </main>
 
       <CreateQuizSlider

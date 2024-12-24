@@ -6,7 +6,7 @@ import CreateQuizSlider from "../components/create";
 import { NavBar } from "../components/shared/navbar";
 import ToggleButton from "../components/toggle-button";
 import { motion } from "framer-motion";
-import { useUser } from "@clerk/clerk-react";
+import { useUser, SignInButton } from "@clerk/clerk-react";
 
 const createdQuizzes = [
   {
@@ -98,8 +98,7 @@ const participatedQuizzes = [
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
   const [showCreated, setShowCreated] = useState(true);
-  const { isSignedIn, user, isLoaded } = useUser();
-  console.log(isSignedIn, user, isLoaded);
+  const { isSignedIn } = useUser();
 
   useEffect(() => {
     document.body.classList.add(
@@ -132,13 +131,15 @@ function Dashboard() {
           <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
             My Quizzes
           </h2>
-          <button
-            onClick={() => setIsCreateQuizOpen(true)}
-            className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 flex items-center shadow-lg hover:shadow-xl transform hover:scale-105"
-          >
-            <PlusCircleIcon className="h-5 w-5 mr-2" />
-            Create New Quiz
-          </button>
+          {isSignedIn ? (
+            <button
+              onClick={() => setIsCreateQuizOpen(true)}
+              className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 flex items-center shadow-lg hover:shadow-xl transform hover:scale-105"
+            >
+              <PlusCircleIcon className="h-5 w-5 mr-2" />
+              Create New Quiz
+            </button>
+          ) : null}
         </motion.div>
 
         <motion.div
@@ -155,34 +156,53 @@ function Dashboard() {
           />
         </motion.div>
 
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.5, delay: 0.4 }}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-        >
-          {showCreated
-            ? createdQuizzes.map((quiz, index) => (
-                <motion.div
-                  key={quiz.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <QuizCard quiz={quiz} />
-                </motion.div>
-              ))
-            : participatedQuizzes.map((quiz, index) => (
-                <motion.div
-                  key={quiz.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <ParticipatedQuizCard quiz={quiz} />
-                </motion.div>
-              ))}
-        </motion.div>
+        {isSignedIn ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.4 }}
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+          >
+            {showCreated
+              ? createdQuizzes.map((quiz, index) => (
+                  <motion.div
+                    key={quiz.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <QuizCard quiz={quiz} />
+                  </motion.div>
+                ))
+              : participatedQuizzes.map((quiz, index) => (
+                  <motion.div
+                    key={quiz.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
+                  >
+                    <ParticipatedQuizCard quiz={quiz} />
+                  </motion.div>
+                ))}
+          </motion.div>
+        ) : (
+          <motion.div
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="text-center"
+          >
+            <h1 className="text-4xl font-bold mb-4">Welcome to Quizzle</h1>
+            <p className="text-xl mb-8">
+              Sign in to create and participate in quizzes!
+            </p>
+            <SignInButton mode="modal">
+              <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                Sign In
+              </button>
+            </SignInButton>
+          </motion.div>
+        )}
       </main>
 
       <CreateQuizSlider

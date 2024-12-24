@@ -97,6 +97,25 @@ exports.getMyQuizzes = async (req, res) => {
   }
 };
 
+// Get all quizzes attempted by the user
+exports.getMyAttempts = async (req, res) => {
+  try {
+    const user = await User.findOne({ clerkId: req.auth.userId }).populate({
+      path: "attemptedQuizzes",
+      populate: {
+        path: "quiz", // Populate the quiz details inside each attempted quiz
+        model: "Quiz",
+      },
+    });
+    res.status(200).json({
+      count: user.attemptedQuizzes.length,
+      attemptedQuizzes: user.attemptedQuizzes,
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
 // Get all published quizzes available for users
 exports.getAvailableQuizzes = async (req, res) => {
   try {

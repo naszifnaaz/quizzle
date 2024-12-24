@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import { ArrowRightIcon } from "@heroicons/react/24/outline";
+import { SignUpButton } from "@clerk/clerk-react";
 
 export function CTASection() {
   const [ref, inView] = useInView({
@@ -46,8 +47,9 @@ export function CTASection() {
           className="flex flex-col sm:flex-row justify-center gap-4"
         >
           <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-8 py-4 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 transform hover:scale-105">
-            Sign Up Now
+            <SignUpButton />
           </button>
+
           <button className="border border-purple-400 text-purple-400 px-8 py-4 rounded-full font-semibold hover:bg-purple-400 hover:text-white transition duration-300 transform hover:scale-105 flex items-center justify-center">
             View Plans
             <ArrowRightIcon className="h-5 w-5 ml-2" />

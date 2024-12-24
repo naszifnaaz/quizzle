@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import QuizCard from "../components/quiz-card";
@@ -8,6 +6,7 @@ import CreateQuizSlider from "../components/create";
 import { NavBar } from "../components/shared/navbar";
 import ToggleButton from "../components/toggle-button";
 import { motion } from "framer-motion";
+import { useUser } from "@clerk/clerk-react";
 
 const createdQuizzes = [
   {
@@ -99,9 +98,10 @@ const participatedQuizzes = [
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
   const [showCreated, setShowCreated] = useState(true);
+  const { isSignedIn, user, isLoaded } = useUser();
+  console.log(isSignedIn, user, isLoaded);
 
   useEffect(() => {
-    // Add a class to the body for global styles
     document.body.classList.add(
       "bg-gradient-to-br",
       "from-indigo-900",

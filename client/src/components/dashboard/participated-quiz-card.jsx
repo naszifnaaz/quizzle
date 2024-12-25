@@ -14,11 +14,13 @@ export default function ParticipatedQuizCard({ quiz }) {
       className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-xl shadow-lg overflow-hidden"
     >
       <div className="p-6">
-        <h3 className="text-xl font-semibold text-white mb-3">{quiz.title}</h3>
+        <h3 className="text-xl font-semibold text-white mb-3">
+          {quiz.quiz.title}
+        </h3>
         <div className="flex flex-col space-y-2 text-sm text-gray-300">
           <div className="flex items-center">
             <DocumentTextIcon className="h-5 w-5 mr-2 text-blue-400" />
-            <span>{quiz.questions} Questions</span>
+            <span>{quiz.quiz.questions.length} Questions</span>
           </div>
           <div className="flex items-center">
             <ChartBarIcon className="h-5 w-5 mr-2 text-orange-400" />

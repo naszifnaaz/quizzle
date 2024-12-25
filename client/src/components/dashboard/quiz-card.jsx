@@ -18,11 +18,11 @@ export default function QuizCard({ quiz, isParticipated = false }) {
         <div className="flex flex-col space-y-2 text-sm text-gray-300">
           <div className="flex items-center">
             <DocumentTextIcon className="h-5 w-5 mr-2 text-blue-400" />
-            <span>{quiz.questions} Questions</span>
+            <span>{quiz.questions.length} Questions</span>
           </div>
           <div className="flex items-center">
             <UserIcon className="h-5 w-5 mr-2 text-green-400" />
-            <span>{quiz.participants} Participants</span>
+            <span>{quiz.attempts.length} Participants</span>
           </div>
           <div className="flex items-center">
             <ClockIcon className="h-5 w-5 mr-2 text-purple-400" />
@@ -55,7 +55,7 @@ export default function QuizCard({ quiz, isParticipated = false }) {
           >
             {quiz.status}
           </span>
-          <Link to={`/quiz/${quiz.id}`}>
+          <Link to={`/quiz/${quiz._id}`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}

@@ -6,20 +6,36 @@ import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { NavBar } from "../components/shared/navbar";
 import { motion } from "framer-motion";
-import { useUser, SignInButton } from "@clerk/clerk-react";
+import { useUser, SignInButton, useAuth } from "@clerk/clerk-react";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  createdQuizzes,
-  participatedQuizzes,
-  availableQuizzes,
-} from "../data/quiz-data";
+  fetchAvailableQuizzes,
+  fetchMyAttempts,
+  fetchMyQuizzes,
+} from "../features/app.slice";
 
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Created");
   const [currentPage, setCurrentPage] = useState(1);
   const { isSignedIn } = useUser();
+  const { getToken } = useAuth();
+  const dispatch = useDispatch();
+  const createdQuizzes =
+    useSelector((store) => store.createdQuizzes.created) || [];
+  const participatedQuizzes =
+    useSelector((store) => store.attemptedQuizzes.attempted) || [];
+  const availableQuizzes =
+    useSelector((store) => store.availableQuizzes.available) || [];
 
   const itemsPerPage = 6;
+
+  async function getQuizzes() {
+    const token = await getToken();
+    dispatch(fetchMyQuizzes(token));
+    dispatch(fetchMyAttempts(token));
+    dispatch(fetchAvailableQuizzes(token));
+  }
 
   useEffect(() => {
     document.body.classList.add(
@@ -28,6 +44,8 @@ function Dashboard() {
       "to-purple-900",
       "text-white"
     );
+
+    getQuizzes();
 
     return () => {
       document.body.classList.remove(

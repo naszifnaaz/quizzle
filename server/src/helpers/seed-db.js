@@ -4,8 +4,7 @@ const Quiz = require("../models/quiz.model");
 const Attempt = require("../models/attempt.model");
 require("dotenv").config();
 
-const MONGODB_URI =
-  "mongodb+srv://naszifnaaz:aKXSR4RWud3ufRK8@quizzle-cluster.iiyeq.mongodb.net/dev";
+const MONGODB_URI = process.env.MONGODB_URI;
 
 const usersData = [
   {

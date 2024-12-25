@@ -5,13 +5,14 @@ const userSchema = new mongoose.Schema(
     clerkId: { type: String, required: true, unique: true },
     email: { type: String, required: true },
     name: { type: String, required: true },
-    createdQuizzes: [
+    avatar: { type: String },
+    created: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Quiz",
       },
     ],
-    attemptedQuizzes: [
+    attempted: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Attempt",

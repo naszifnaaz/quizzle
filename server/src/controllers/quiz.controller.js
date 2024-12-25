@@ -5,11 +5,12 @@ const Attempt = require("../models/attempt.model");
 // Create a quiz
 exports.createQuiz = async (req, res) => {
   try {
-    const { title, questions, timeLimit } = req.body;
+    const { title, desc, questions, timeLimit } = req.body;
     const user = await User.findOne({ clerkId: req.auth.userId });
 
     const quiz = new Quiz({
       title,
+      desc,
       creator: user._id,
       questions,
       timeLimit,

@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
-import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import QuizCard from "../components/dashboard/quiz-card";
 import ParticipatedQuizCard from "../components/dashboard/participated-quiz-card";
 import CreateQuizSlider from "../components/dashboard/create";
-import { NavBar } from "../components/shared/navbar";
 import ToggleButton from "../components/dashboard/toggle-button";
+import { useState, useEffect } from "react";
+import { PlusCircleIcon } from "@heroicons/react/24/outline";
+import { NavBar } from "../components/shared/navbar";
 import { motion } from "framer-motion";
 import { useUser, SignInButton } from "@clerk/clerk-react";
-import { useDispatch } from "react-redux";
-import { useAuth } from "@clerk/clerk-react";
 import {
   createdQuizzes,
   participatedQuizzes,
@@ -19,9 +17,7 @@ function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Created");
   const [currentPage, setCurrentPage] = useState(1);
-  const { isSignedIn, user } = useUser();
-  const dispatch = useDispatch();
-  const { getToken } = useAuth();
+  const { isSignedIn } = useUser();
 
   const itemsPerPage = 6;
 

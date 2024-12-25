@@ -21,6 +21,7 @@ const quizSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    desc: { type: String },
     creator: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -36,10 +37,13 @@ const quizSchema = new mongoose.Schema(
       enum: ["Draft", "Published"],
       default: "Draft",
     },
-    participants: {
-      type: Number,
-      default: 0,
-    },
+    attempts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Attempt",
+        default: [],
+      },
+    ],
   },
   {
     timestamps: true,

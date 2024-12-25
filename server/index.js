@@ -16,9 +16,11 @@ app.get("/", (req, res) => {
 
 const webhookRoutes = require("./src/routes/webhook.router");
 const quizRoutes = require("./src/routes/quiz.router");
+const userRoutes = require("./src/routes/user.router");
 
+app.use("/api/user", userRoutes);
 app.use("/webhooks", webhookRoutes);
-app.use("/api/quizzes", quizRoutes);
+app.use("/api/quiz", quizRoutes);
 
 app.listen(8080, () => {
   console.log("Listening on port 8080...");

@@ -10,65 +10,7 @@ import {
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import { NavBar } from "../components/shared/navbar";
-
-const participants = [
-  { username: "user1", score: 8, timeTaken: 15 },
-  { username: "user2", score: 7, timeTaken: 18 },
-  { username: "user3", score: 10, timeTaken: 12 },
-  { username: "user4", score: 6, timeTaken: 20 },
-  { username: "user5", score: 9, timeTaken: 14 },
-];
-
-const quizzes = [
-  {
-    id: 1,
-    title: "JavaScript Basics",
-    questions: 10,
-    participants: 150,
-    status: "Published",
-    timeLimit: 20,
-  },
-  {
-    id: 2,
-    title: "React Fundamentals",
-    questions: 15,
-    participants: 75,
-    status: "Published",
-    timeLimit: 30,
-  },
-  {
-    id: 3,
-    title: "CSS Tricks",
-    questions: 8,
-    participants: 0,
-    status: "Draft",
-    timeLimit: 15,
-  },
-  {
-    id: 4,
-    title: "Python for Beginners",
-    questions: 12,
-    participants: 200,
-    status: "Published",
-    timeLimit: 25,
-  },
-  {
-    id: 5,
-    title: "Data Structures",
-    questions: 20,
-    participants: 50,
-    status: "Published",
-    timeLimit: 40,
-  },
-  {
-    id: 6,
-    title: "Machine Learning Intro",
-    questions: 5,
-    participants: 0,
-    status: "Draft",
-    timeLimit: 10,
-  },
-];
+import { participants, quizzes } from "../data/quiz-data";
 
 export default function QuizDetails() {
   const { id } = useParams();

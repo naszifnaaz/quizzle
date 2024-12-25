@@ -7,76 +7,7 @@ import {
 } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
 import { NavBar } from "../components/shared/navbar";
-
-const mockReport = {
-  username: "user1",
-  quizTitle: "JavaScript Basics",
-  score: 8,
-  totalQuestions: 10,
-  timeTaken: 15,
-  answers: [
-    {
-      question: "What is JavaScript?",
-      userAnswer: "A programming language",
-      correctAnswer: "A programming language",
-      isCorrect: true,
-    },
-    {
-      question: "What is a variable?",
-      userAnswer: "A container for data",
-      correctAnswer: "A container for data",
-      isCorrect: true,
-    },
-    {
-      question: "What is a function?",
-      userAnswer: "A block of code",
-      correctAnswer: "A block of code",
-      isCorrect: true,
-    },
-    {
-      question: "What is an array?",
-      userAnswer: "A list of items",
-      correctAnswer: "A list of items",
-      isCorrect: true,
-    },
-    {
-      question: "What is an object?",
-      userAnswer: "A collection of properties",
-      correctAnswer: "A collection of properties",
-      isCorrect: true,
-    },
-    {
-      question: "What is a loop?",
-      userAnswer: "A way to repeat code",
-      correctAnswer: "A way to repeat code",
-      isCorrect: true,
-    },
-    {
-      question: "What is a conditional statement?",
-      userAnswer: "A way to make decisions",
-      correctAnswer: "A way to make decisions",
-      isCorrect: true,
-    },
-    {
-      question: "What is the DOM?",
-      userAnswer: "Document Object Model",
-      correctAnswer: "Document Object Model",
-      isCorrect: true,
-    },
-    {
-      question: "What is event handling?",
-      userAnswer: "Responding to user actions",
-      correctAnswer: "Responding to user interactions",
-      isCorrect: false,
-    },
-    {
-      question: "What is AJAX?",
-      userAnswer: "Asynchronous JavaScript",
-      correctAnswer: "Asynchronous JavaScript and XML",
-      isCorrect: false,
-    },
-  ],
-};
+import { mockReport } from "../data/quiz-data";
 
 export default function ParticipantReport() {
   const { quizId, username } = useParams();

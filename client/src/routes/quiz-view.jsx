@@ -11,49 +11,7 @@ import {
 import { SignIn, useUser } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
-
-// Mock quiz data (unchanged)
-const quizData = {
-  title: "JavaScript Fundamentals",
-  timeLimit: 10, // in minutes
-  questions: [
-    {
-      id: 1,
-      text: "Which of the following is/are correct way(s) to declare a variable in JavaScript?",
-      options: [
-        { id: "a", text: "var x = 5;" },
-        { id: "b", text: "let y = 10;" },
-        { id: "c", text: "const z = 15;" },
-        { id: "d", text: "All of the above" },
-      ],
-      correctAnswers: ["d"],
-      multipleCorrect: false,
-    },
-    {
-      id: 2,
-      text: "Which of these are looping structures in JavaScript?",
-      options: [
-        { id: "a", text: "for" },
-        { id: "b", text: "while" },
-        { id: "c", text: "do-while" },
-        { id: "d", text: "foreach" },
-      ],
-      correctAnswers: ["a", "b", "c"],
-      multipleCorrect: true,
-    },
-    {
-      id: 3,
-      text: "What does the 'typeof' operator return for an array?",
-      options: [
-        { id: "a", text: "array" },
-        { id: "b", text: "object" },
-        { id: "c", text: "list" },
-      ],
-      correctAnswers: ["b"],
-      multipleCorrect: false,
-    },
-  ],
-};
+import { quizData } from "../data/quiz-data";
 
 export default function QuizView() {
   const [username, setUsername] = useState("");

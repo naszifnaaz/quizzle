@@ -4,6 +4,7 @@ import Dashboard from "./routes/dashboard";
 import QuizDetails from "./routes/quiz-details";
 import ParticipantReport from "./routes/participant-report";
 import QuizView from "./routes/quiz-view";
+import QuizResultPage from "./routes/quiz-results";
 
 export default function App() {
   return (
@@ -13,6 +14,7 @@ export default function App() {
       <Route path="/quiz/:id" element={<QuizDetails />} />
       <Route path="/report/:quizId/:username" element={<ParticipantReport />} />
       <Route path="/quiz" element={<QuizView />} />
+      <Route path="/quiz-results" element={<QuizResultPage />} />
     </Routes>
   );
 }

@@ -1,5 +1,4 @@
 import {
-  UserIcon,
   DocumentTextIcon,
   ClockIcon,
   ChartBarIcon,

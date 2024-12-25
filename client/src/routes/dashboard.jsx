@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import QuizCard from "../components/quiz-card";
 import ParticipatedQuizCard from "../components/participated-quiz-card";
@@ -99,12 +99,66 @@ const participatedQuizzes = [
   },
 ];
 
+const availableQuizzes = [
+  {
+    id: 1,
+    title: "Introduction to AI",
+    questions: 15,
+    participants: 500,
+    status: "Available",
+    timeLimit: 30,
+  },
+  {
+    id: 2,
+    title: "Blockchain Basics",
+    questions: 12,
+    participants: 300,
+    status: "Available",
+    timeLimit: 25,
+  },
+  {
+    id: 3,
+    title: "Cloud Computing Fundamentals",
+    questions: 18,
+    participants: 400,
+    status: "Available",
+    timeLimit: 35,
+  },
+  {
+    id: 4,
+    title: "Cybersecurity Essentials",
+    questions: 20,
+    participants: 600,
+    status: "Available",
+    timeLimit: 40,
+  },
+  {
+    id: 5,
+    title: "Data Science for Beginners",
+    questions: 16,
+    participants: 450,
+    status: "Available",
+    timeLimit: 30,
+  },
+  {
+    id: 6,
+    title: "Mobile App Development",
+    questions: 14,
+    participants: 350,
+    status: "Available",
+    timeLimit: 28,
+  },
+];
+
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
-  const [showCreated, setShowCreated] = useState(true);
+  const [selectedOption, setSelectedOption] = useState("Created");
+  const [currentPage, setCurrentPage] = useState(1);
   const { isSignedIn, user } = useUser();
   const dispatch = useDispatch();
   const { getToken } = useAuth();
+
+  const itemsPerPage = 6;
 
   // changing rtk states, and getting token
   async function handleUserLogin() {
@@ -140,6 +194,34 @@ function Dashboard() {
 
   useEffect(() => {}, [async function handleLogin() {}]);
 
+  const getQuizzesToDisplay = () => {
+    let quizzes;
+    switch (selectedOption) {
+      case "Created":
+        quizzes = createdQuizzes;
+        break;
+      case "Attempts":
+        quizzes = participatedQuizzes;
+        break;
+      case "Available":
+        quizzes = availableQuizzes;
+        break;
+      default:
+        quizzes = [];
+    }
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+    return quizzes.slice(startIndex, endIndex);
+  };
+
+  const totalPages = Math.ceil(
+    (selectedOption === "Created"
+      ? createdQuizzes.length
+      : selectedOption === "Attempts"
+      ? participatedQuizzes.length
+      : availableQuizzes.length) / itemsPerPage
+  );
+
   return (
     <div className="min-h-screen overflow-hidden">
       <NavBar />
@@ -171,42 +253,52 @@ function Dashboard() {
           className="mb-6"
         >
           <ToggleButton
-            leftOption="Created"
-            rightOption="Participated"
-            isLeftSelected={showCreated}
-            onToggle={() => setShowCreated(!showCreated)}
+            selectedOption={selectedOption}
+            onToggle={setSelectedOption}
           />
         </motion.div>
 
         {isSignedIn ? (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.5, delay: 0.4 }}
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {showCreated
-              ? createdQuizzes.map((quiz, index) => (
-                  <motion.div
-                    key={quiz.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
-                    <QuizCard quiz={quiz} />
-                  </motion.div>
-                ))
-              : participatedQuizzes.map((quiz, index) => (
-                  <motion.div
-                    key={quiz.id}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                  >
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+            >
+              {getQuizzesToDisplay().map((quiz, index) => (
+                <motion.div
+                  key={quiz.id}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  {selectedOption === "Attempts" ? (
                     <ParticipatedQuizCard quiz={quiz} />
-                  </motion.div>
-                ))}
-          </motion.div>
+                  ) : (
+                    <QuizCard quiz={quiz} />
+                  )}
+                </motion.div>
+              ))}
+            </motion.div>
+            <div className="mt-8 flex justify-center">
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                (page) => (
+                  <button
+                    key={page}
+                    onClick={() => setCurrentPage(page)}
+                    className={`mx-1 px-3 py-1 rounded ${
+                      currentPage === page
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-700"
+                    }`}
+                  >
+                    {page}
+                  </button>
+                )
+              )}
+            </div>
+          </>
         ) : (
           <motion.div
             initial={{ opacity: 0, y: -20 }}

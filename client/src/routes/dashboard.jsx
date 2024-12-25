@@ -8,9 +8,7 @@ import ToggleButton from "../components/dashboard/toggle-button";
 import { motion } from "framer-motion";
 import { useUser, SignInButton } from "@clerk/clerk-react";
 import { useDispatch } from "react-redux";
-import { login } from "../features/user.slice";
 import { useAuth } from "@clerk/clerk-react";
-import { getQuizzes } from "../features/quiz.slice";
 import {
   createdQuizzes,
   participatedQuizzes,
@@ -27,18 +25,6 @@ function Dashboard() {
 
   const itemsPerPage = 6;
 
-  // changing rtk states, and getting token
-  async function handleUserLogin() {
-    dispatch(
-      login({
-        clerkId: user?.id,
-      })
-    );
-
-    const token = await getToken();
-    dispatch(getQuizzes(token));
-  }
-
   useEffect(() => {
     document.body.classList.add(
       "bg-gradient-to-br",
@@ -46,8 +32,6 @@ function Dashboard() {
       "to-purple-900",
       "text-white"
     );
-
-    if (isSignedIn) handleUserLogin();
 
     return () => {
       document.body.classList.remove(
@@ -57,9 +41,7 @@ function Dashboard() {
         "text-white"
       );
     };
-  }, [isSignedIn]);
-
-  useEffect(() => {}, [async function handleLogin() {}]);
+  }, []);
 
   const getQuizzesToDisplay = () => {
     let quizzes;

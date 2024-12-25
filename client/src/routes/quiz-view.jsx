@@ -1,17 +1,16 @@
 import { useState, useEffect } from "react";
 import {
-  UserIcon,
   ClockIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   CheckIcon,
   QuestionMarkCircleIcon,
   BookOpenIcon,
-  ArrowPathIcon,
 } from "@heroicons/react/24/outline";
-import { PieChart, Pie, Cell, ResponsiveContainer } from "recharts";
-import { SignIn, SignUp, useUser } from "@clerk/clerk-react";
+
+import { SignIn, useUser } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 // Mock quiz data (unchanged)
 const quizData = {
@@ -66,6 +65,7 @@ export default function QuizView() {
   const [showFeedback, setShowFeedback] = useState({});
   const [quizStartTime, setQuizStartTime] = useState(null);
   const { isSignedIn, user } = useUser();
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (quizStarted && !showResults && timeLeft > 0) {
@@ -231,196 +231,7 @@ export default function QuizView() {
   }
 
   if (showResults) {
-    const score = quizData.questions.reduce((acc, question) => {
-      const userAnswer = userAnswers[question.id] || [];
-      const isCorrect =
-        JSON.stringify(userAnswer.sort()) ===
-        JSON.stringify(question.correctAnswers.sort());
-      return acc + (isCorrect ? 1 : 0);
-    }, 0);
-
-    const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
-    const correctAnswers = score;
-    const incorrectAnswers = quizData.questions.length - score;
-
-    const pieChartData = [
-      { name: "Correct", value: correctAnswers, color: "#4CAF50" },
-      { name: "Incorrect", value: incorrectAnswers, color: "#F44336" },
-    ];
-
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="min-h-screen flex items-center justify-center"
-      >
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
-          className="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg p-8 rounded-lg shadow-xl w-full max-w-2xl"
-        >
-          <h1 className="text-3xl font-bold mb-6 text-center text-white bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            Quiz Results
-          </h1>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-8">
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-white">
-                Performance Statistics
-              </h2>
-              <div className="space-y-2 text-gray-300">
-                <p className="flex items-center">
-                  <UserIcon className="h-5 w-5 mr-2 text-blue-400" />
-                  <span className="font-medium">Username:</span>
-                  <span className="ml-2">{username}</span>
-                </p>
-                <p className="flex items-center">
-                  <CheckIcon className="h-5 w-5 mr-2 text-green-400" />
-                  <span className="font-medium">Score:</span>
-                  <span className="ml-2">
-                    {score} out of {quizData.questions.length}
-                  </span>
-                </p>
-                <p className="flex items-center">
-                  <ClockIcon className="h-5 w-5 mr-2 text-purple-400" />
-                  <span className="font-medium">Time Taken:</span>
-                  <span className="ml-2">{formatTime(timeTaken)}</span>
-                </p>
-                <p className="flex items-center">
-                  <QuestionMarkCircleIcon className="h-5 w-5 mr-2 text-yellow-400" />
-                  <span className="font-medium">Correct Answers:</span>
-                  <span className="ml-2">{correctAnswers}</span>
-                </p>
-                <p className="flex items-center">
-                  <QuestionMarkCircleIcon className="h-5 w-5 mr-2 text-red-400" />
-                  <span className="font-medium">Incorrect Answers:</span>
-                  <span className="ml-2">{incorrectAnswers}</span>
-                </p>
-              </div>
-            </div>
-            <div>
-              <h2 className="text-xl font-semibold mb-4 text-white">
-                Score Distribution
-              </h2>
-              <ResponsiveContainer width="100%" height={200}>
-                <PieChart>
-                  <Pie
-                    data={pieChartData}
-                    cx="50%"
-                    cy="50%"
-                    outerRadius={80}
-                    fill="#8884d8"
-                    dataKey="value"
-                    label={({ name, percent }) =>
-                      `${name} ${(percent * 100).toFixed(0)}%`
-                    }
-                  >
-                    {pieChartData.map((entry, index) => (
-                      <Cell key={`cell-${index}`} fill={entry.color} />
-                    ))}
-                  </Pie>
-                </PieChart>
-              </ResponsiveContainer>
-            </div>
-          </div>
-          <div className="space-y-4">
-            <h2 className="text-xl font-semibold text-white">
-              Detailed Answers
-            </h2>
-            {quizData.questions.map((question, index) => {
-              const userAnswer = userAnswers[question.id] || [];
-              const isCorrect =
-                JSON.stringify(userAnswer.sort()) ===
-                JSON.stringify(question.correctAnswers.sort());
-              return (
-                <motion.div
-                  key={question.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`p-4 rounded-md ${
-                    isCorrect
-                      ? "bg-green-400 bg-opacity-20"
-                      : "bg-red-400 bg-opacity-20"
-                  }`}
-                >
-                  <p className="font-medium mb-2 text-white">
-                    Question {index + 1}: {question.text}
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    Your answer:{" "}
-                    {userAnswer
-                      .map(
-                        (id) =>
-                          question.options.find((opt) => opt.id === id)?.text
-                      )
-                      .join(", ")}
-                  </p>
-                  <p className="text-sm text-gray-300">
-                    Correct answer:{" "}
-                    {question.correctAnswers
-                      .map(
-                        (id) =>
-                          question.options.find((opt) => opt.id === id)?.text
-                      )
-                      .join(", ")}
-                  </p>
-                </motion.div>
-              );
-            })}
-          </div>
-          {score / quizData.questions.length < 0.6 && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5 }}
-              className="mt-8 p-4 bg-yellow-400 bg-opacity-20 rounded-md"
-            >
-              <h3 className="text-lg font-semibold mb-2 text-white">
-                Need to improve?
-              </h3>
-              <p className="mb-2 text-gray-300">
-                Here are some resources to help you prepare better:
-              </p>
-              <ul className="list-disc list-inside text-gray-300">
-                <li>
-                  <a href="#" className="text-blue-400 hover:underline">
-                    JavaScript Fundamentals Course
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-400 hover:underline">
-                    MDN Web Docs: JavaScript Guide
-                  </a>
-                </li>
-                <li>
-                  <a href="#" className="text-blue-400 hover:underline">
-                    JavaScript: Understanding the Weird Parts
-                  </a>
-                </li>
-              </ul>
-            </motion.div>
-          )}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7 }}
-            className="mt-8 flex justify-center"
-          >
-            <motion.button
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleRetryQuiz}
-              className="flex items-center px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-md hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition duration-200"
-            >
-              <ArrowPathIcon className="h-5 w-5 mr-2" />
-              Retry Quiz
-            </motion.button>
-          </motion.div>
-        </motion.div>
-      </motion.div>
-    );
+    navigate("/quiz-results");
   }
 
   const currentQuestionData = quizData.questions[currentQuestion];

@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import QuizCard from "../components/quiz-card";
-import ParticipatedQuizCard from "../components/participated-quiz-card";
-import CreateQuizSlider from "../components/create";
+import QuizCard from "../components/dashboard/quiz-card";
+import ParticipatedQuizCard from "../components/dashboard/participated-quiz-card";
+import CreateQuizSlider from "../components/dashboard/create";
 import { NavBar } from "../components/shared/navbar";
-import ToggleButton from "../components/toggle-button";
+import ToggleButton from "../components/dashboard/toggle-button";
 import { motion } from "framer-motion";
 import { useUser, SignInButton } from "@clerk/clerk-react";
 import { useDispatch } from "react-redux";

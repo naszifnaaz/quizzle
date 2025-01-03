@@ -2,8 +2,8 @@ const Quiz = require("../models/quiz.model");
 const User = require("../models/user.model");
 const Attempt = require("../models/attempt.model");
 
-// Create a quiz
-exports.createQuiz = async (req, res) => {
+// Save quiz as draft
+exports.draftQuiz = async (req, res) => {
   try {
     const { title, desc, questions, timeLimit } = req.body;
     const user = await User.findOne({ clerkId: req.auth.userId });
@@ -14,13 +14,14 @@ exports.createQuiz = async (req, res) => {
       creator: user._id,
       questions,
       timeLimit,
+      status: "Draft",
     });
 
     await quiz.save();
 
     // Add quiz to user's created quizzes
     await User.findByIdAndUpdate(user._id, {
-      $push: { createdQuizzes: quiz._id },
+      $push: { created: quiz._id },
     });
 
     res.status(201).json(quiz);

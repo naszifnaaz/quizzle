@@ -4,7 +4,7 @@ const quizController = require("../controllers/quiz.controller");
 const { requireAuth } = require("@clerk/express");
 
 // Quiz routes
-router.post("/create", requireAuth(), quizController.createQuiz);
+router.post("/draft", requireAuth(), quizController.draftQuiz);
 router.get("/my-quizzes", requireAuth(), quizController.getMyQuizzes);
 router.get("/my-attempts", requireAuth(), quizController.getMyAttempts);
 router.get("/available", requireAuth(), quizController.getAvailableQuizzes);

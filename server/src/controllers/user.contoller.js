@@ -5,7 +5,6 @@ const Attempt = require("../models/attempt.model");
 // Get all quizzes created by the logged-in user
 exports.getMyQuizzes = async (req, res) => {
   try {
-    console.log(req.auth);
     const user = await User.findOne({ clerkId: req.auth.userId }).populate(
       "created"
     );
@@ -21,7 +20,6 @@ exports.getMyQuizzes = async (req, res) => {
 // Get all quizzes attempted by the user
 exports.getMyAttempts = async (req, res) => {
   try {
-    console.log(req.auth);
     const user = await User.findOne({ clerkId: req.auth.userId }).populate({
       path: "attempted",
       populate: {

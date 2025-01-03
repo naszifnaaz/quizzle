@@ -9,11 +9,11 @@ exports.draftQuiz = async (req, res) => {
     const user = await User.findOne({ clerkId: req.auth.userId });
 
     const quiz = new Quiz({
-      title,
-      desc,
+      title: title || "NA",
+      desc: desc || "NA",
       creator: user._id,
-      questions,
-      timeLimit,
+      questions: questions || [],
+      timeLimit: timeLimit || 10,
       status: "Draft",
     });
 
@@ -25,6 +25,37 @@ exports.draftQuiz = async (req, res) => {
     });
 
     res.status(201).json(quiz);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Publish quiz and generate unique link
+exports.publishQuiz = async (req, res) => {
+  try {
+    const { title, desc, questions, timeLimit } = req.body;
+    const user = await User.findOne({ clerkId: req.auth.userId });
+
+    const quiz = new Quiz({
+      title,
+      desc,
+      creator: user._id,
+      questions,
+      timeLimit,
+      status: "Published",
+    });
+
+    await quiz.save();
+
+    // Add quiz to user's created quizzes
+    await User.findByIdAndUpdate(user._id, {
+      $push: { created: quiz._id },
+    });
+
+    // Generate unique URL
+    const quizUrl = `https://quizzle.com/quiz/${quiz._id}`;
+
+    res.status(201).json({ quizUrl });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

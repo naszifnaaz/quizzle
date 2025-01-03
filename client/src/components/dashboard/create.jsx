@@ -9,6 +9,8 @@ import {
   ChevronRightIcon,
   ArchiveBoxIcon,
   LinkIcon,
+  CheckBadgeIcon,
+  PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -16,7 +18,19 @@ function CreateQuizSlider({ isOpen, onClose }) {
   const [title, setTitle] = useState("");
   const [numQuestions, setNumQuestions] = useState(1);
   const [timeLimit, setTimeLimit] = useState(10);
-  const [questions, setQuestions] = useState([{ text: "", options: ["", ""] }]);
+  const [questions, setQuestions] = useState([
+    {
+      text: "",
+      options: [
+        { id: "opt1", text: "" },
+        { id: "opt2", text: "" },
+      ],
+      correctAnswers: [],
+      multipleCorrect: false,
+      hasImage: false,
+      image: null,
+    },
+  ]);
 
   const titleInputRef = useRef(null);
 
@@ -28,7 +42,20 @@ function CreateQuizSlider({ isOpen, onClose }) {
 
   const handleAddQuestion = () => {
     if (questions.length < numQuestions) {
-      setQuestions([...questions, { text: "", options: ["", ""] }]);
+      setQuestions([
+        ...questions,
+        {
+          text: "",
+          options: [
+            { id: `opt1`, text: "" },
+            { id: `opt2`, text: "" },
+          ],
+          correctAnswers: [],
+          multipleCorrect: false,
+          hasImage: false,
+          image: null,
+        },
+      ]);
     }
   };
 
@@ -38,31 +65,123 @@ function CreateQuizSlider({ isOpen, onClose }) {
     setQuestions(newQuestions);
   };
 
-  const handleOptionChange = (questionIndex, optionIndex, value) => {
+  const handleOptionChange = (questionIndex, optionId, value) => {
     const newQuestions = [...questions];
-    newQuestions[questionIndex].options[optionIndex] = value;
+    const optionIndex = newQuestions[questionIndex].options.findIndex(
+      (opt) => opt.id === optionId
+    );
+    newQuestions[questionIndex].options[optionIndex].text = value;
     setQuestions(newQuestions);
   };
 
   const handleAddOption = (questionIndex) => {
     if (questions[questionIndex].options.length < 4) {
       const newQuestions = [...questions];
-      newQuestions[questionIndex].options.push("");
+      const newOptionId = `opt${
+        newQuestions[questionIndex].options.length + 1
+      }`;
+      newQuestions[questionIndex].options.push({ id: newOptionId, text: "" });
       setQuestions(newQuestions);
     }
   };
 
-  const handleRemoveOption = (questionIndex, optionIndex) => {
+  const handleRemoveOption = (questionIndex, optionId) => {
     if (questions[questionIndex].options.length > 2) {
       const newQuestions = [...questions];
-      newQuestions[questionIndex].options.splice(optionIndex, 1);
+      newQuestions[questionIndex].options = newQuestions[
+        questionIndex
+      ].options.filter((opt) => opt.id !== optionId);
+      newQuestions[questionIndex].correctAnswers = newQuestions[
+        questionIndex
+      ].correctAnswers.filter((id) => id !== optionId);
       setQuestions(newQuestions);
+    }
+  };
+
+  const handleMarkCorrect = (questionIndex, optionId) => {
+    const newQuestions = [...questions];
+    const question = newQuestions[questionIndex];
+
+    if (question.multipleCorrect) {
+      const index = question.correctAnswers.indexOf(optionId);
+      if (index > -1) {
+        question.correctAnswers.splice(index, 1);
+      } else {
+        question.correctAnswers.push(optionId);
+      }
+    } else {
+      question.correctAnswers = [optionId];
+    }
+
+    setQuestions(newQuestions);
+  };
+
+  const toggleMultipleCorrect = (questionIndex) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].multipleCorrect =
+      !newQuestions[questionIndex].multipleCorrect;
+    newQuestions[questionIndex].correctAnswers = [];
+    setQuestions(newQuestions);
+  };
+
+  const toggleHasImage = (questionIndex) => {
+    const newQuestions = [...questions];
+    newQuestions[questionIndex].hasImage =
+      !newQuestions[questionIndex].hasImage;
+    if (!newQuestions[questionIndex].hasImage) {
+      newQuestions[questionIndex].image = null;
+    }
+    setQuestions(newQuestions);
+  };
+
+  const handleImageUpload = (questionIndex, event) => {
+    const file = event.target.files[0];
+    if (file && file.type.substr(0, 5) === "image") {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newQuestions = [...questions];
+        newQuestions[questionIndex].image = reader.result;
+        setQuestions(newQuestions);
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+  };
+
+  const handleDrop = (questionIndex, e) => {
+    e.preventDefault();
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.substr(0, 5) === "image") {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const newQuestions = [...questions];
+        newQuestions[questionIndex].image = reader.result;
+        setQuestions(newQuestions);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log({ title, numQuestions, timeLimit, questions });
+    const quizData = {
+      title,
+      desc: "A quiz created using our platform.",
+      timeLimit: timeLimit,
+      questions: questions.map((q) => ({
+        text: q.text,
+        options: q.options,
+        correctAnswers: q.correctAnswers,
+        multipleCorrect: q.multipleCorrect,
+        hasImage: q.hasImage,
+        image: q.image,
+      })),
+    };
+    console.log(quizData);
+    // Here you would send quizData to your backend
     onClose();
   };
 
@@ -190,28 +309,100 @@ function CreateQuizSlider({ isOpen, onClose }) {
                         required
                       />
                     </div>
-                    {question.options.map((option, oIndex) => (
+                    <div className="mb-2 flex items-center space-x-4">
+                      <label className="flex items-center text-white">
+                        <input
+                          type="checkbox"
+                          checked={question.multipleCorrect}
+                          onChange={() => toggleMultipleCorrect(qIndex)}
+                          className="mr-2"
+                        />
+                        Allow multiple correct answers
+                      </label>
+                      <label className="flex items-center text-white">
+                        <input
+                          type="checkbox"
+                          checked={question.hasImage}
+                          onChange={() => toggleHasImage(qIndex)}
+                          className="mr-2"
+                        />
+                        Include image
+                      </label>
+                    </div>
+                    {question.hasImage && (
                       <div
-                        key={oIndex}
+                        className="mb-2 p-4 border-2 border-dashed border-gray-400 rounded-md"
+                        onDragOver={handleDragOver}
+                        onDrop={(e) => handleDrop(qIndex, e)}
+                      >
+                        {question.image ? (
+                          <img
+                            src={question.image}
+                            alt="Question"
+                            className="max-w-full h-auto mb-2"
+                          />
+                        ) : (
+                          <div className="text-center text-gray-400">
+                            <PhotoIcon className="mx-auto h-12 w-12 mb-2" />
+                            <p>
+                              Drag and drop an image here, or click to select
+                            </p>
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={(e) => handleImageUpload(qIndex, e)}
+                          className="hidden"
+                          id={`image-upload-${qIndex}`}
+                        />
+                        <label
+                          htmlFor={`image-upload-${qIndex}`}
+                          className="mt-2 inline-block px-4 py-2 bg-blue-500 text-white rounded-md cursor-pointer hover:bg-blue-600 transition-colors"
+                        >
+                          {question.image ? "Change Image" : "Upload Image"}
+                        </label>
+                      </div>
+                    )}
+                    {question.options.map((option) => (
+                      <div
+                        key={option.id}
                         className="flex items-center mb-2 relative"
                       >
                         <ChevronRightIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
                         <input
                           type="text"
-                          value={option}
+                          value={option.text}
                           onChange={(e) =>
-                            handleOptionChange(qIndex, oIndex, e.target.value)
+                            handleOptionChange(
+                              qIndex,
+                              option.id,
+                              e.target.value
+                            )
                           }
-                          placeholder={`Enter option ${oIndex + 1}`}
+                          placeholder={`Enter option ${option.id}`}
                           className="flex-grow pl-10 py-2 bg-white bg-opacity-10 rounded-md border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                           required
                         />
+                        <button
+                          type="button"
+                          onClick={() => handleMarkCorrect(qIndex, option.id)}
+                          className={`ml-2 p-1 rounded ${
+                            question.correctAnswers.includes(option.id)
+                              ? "bg-green-500 text-white"
+                              : "bg-gray-300 text-gray-700"
+                          }`}
+                        >
+                          <CheckBadgeIcon className="h-5 w-5" />
+                        </button>
                         {question.options.length > 2 && (
                           <motion.button
                             whileHover={{ scale: 1.1 }}
                             whileTap={{ scale: 0.9 }}
                             type="button"
-                            onClick={() => handleRemoveOption(qIndex, oIndex)}
+                            onClick={() =>
+                              handleRemoveOption(qIndex, option.id)
+                            }
                             className="ml-2 text-red-400 hover:text-red-300"
                           >
                             <TrashIcon className="h-5 w-5" />

@@ -13,8 +13,13 @@ import {
   PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
+import { useDispatch } from "react-redux";
+import { useAuth } from "@clerk/clerk-react";
+import { publishQuiz } from "../../features/app.slice";
 
 function CreateQuizSlider({ isOpen, onClose }) {
+  const dispatch = useDispatch();
+  const { getToken } = useAuth();
   const [title, setTitle] = useState("");
   const [numQuestions, setNumQuestions] = useState(1);
   const [timeLimit, setTimeLimit] = useState(10);
@@ -165,7 +170,7 @@ function CreateQuizSlider({ isOpen, onClose }) {
     }
   };
 
-  const handleSubmit = (e) => {
+  const handlePublish = async (e) => {
     e.preventDefault();
     const quizData = {
       title,
@@ -181,7 +186,29 @@ function CreateQuizSlider({ isOpen, onClose }) {
       })),
     };
     console.log(quizData);
-    // Here you would send quizData to your backend
+    const token = await getToken();
+    dispatch(publishQuiz({ token, quizData }));
+    onClose();
+  };
+
+  const saveAsDraft = async (e) => {
+    e.preventDefault();
+    const quizData = {
+      title,
+      desc: "A quiz created using our platform.",
+      timeLimit: timeLimit,
+      questions: questions.map((q) => ({
+        text: q.text,
+        options: q.options,
+        correctAnswers: q.correctAnswers,
+        multipleCorrect: q.multipleCorrect,
+        hasImage: q.hasImage,
+        image: q.image,
+      })),
+    };
+    console.log(quizData);
+    const token = await getToken();
+    dispatch(publishQuiz({ token, quizData }));
     onClose();
   };
 
@@ -219,7 +246,6 @@ function CreateQuizSlider({ isOpen, onClose }) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
-              onSubmit={handleSubmit}
             >
               <div className="mb-4 relative">
                 <label
@@ -440,6 +466,7 @@ function CreateQuizSlider({ isOpen, onClose }) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="submit"
+                  onClick={handlePublish}
                   className="flex items-center w-1/2 px-4 py-2 bg-gradient-to-r from-green-500 to-blue-500 text-white rounded-md hover:from-green-600 hover:to-blue-600 transition duration-300"
                 >
                   <LinkIcon className="h-5 w-5 mr-2" />
@@ -449,6 +476,7 @@ function CreateQuizSlider({ isOpen, onClose }) {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                   type="button"
+                  onClick={saveAsDraft}
                   className="flex items-center w-1/2 px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-md hover:from-purple-600 hover:to-pink-600 transition duration-300"
                 >
                   <ArchiveBoxIcon className="h-5 w-5 mr-2" />

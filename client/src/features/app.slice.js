@@ -68,6 +68,47 @@ export const fetchAvailableQuizzes = createAsyncThunk(
   }
 );
 
+// Async thunks for saving and publishing quizzes
+export const saveQuizDraft = createAsyncThunk(
+  "app/saveQuizDraft",
+  async ({ token, payload }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/quiz/draft",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
+export const publishQuiz = createAsyncThunk(
+  "app/publishQuiz",
+  async ({ token, payload }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        "http://localhost:8080/api/quiz/publish",
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "app",
   initialState,
@@ -110,6 +151,30 @@ const userSlice = createSlice({
         state.availableQuizzes = action.payload;
       })
       .addCase(fetchAvailableQuizzes.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Handle save quiz as draft
+      .addCase(saveQuizDraft.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(saveQuizDraft.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(saveQuizDraft.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      // Handle publish quiz
+      .addCase(publishQuiz.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(publishQuiz.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(publishQuiz.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

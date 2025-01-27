@@ -73,6 +73,7 @@ export const saveQuizDraft = createAsyncThunk(
   "app/saveQuizDraft",
   async ({ token, payload }, { rejectWithValue }) => {
     try {
+      console.log("slice", payload);
       const response = await axios.post(
         "http://localhost:8080/api/quiz/draft",
         payload,
@@ -93,6 +94,7 @@ export const publishQuiz = createAsyncThunk(
   "app/publishQuiz",
   async ({ token, payload }, { rejectWithValue }) => {
     try {
+      console.log(payload);
       const response = await axios.post(
         "http://localhost:8080/api/quiz/publish",
         payload,

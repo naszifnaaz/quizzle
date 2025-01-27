@@ -4,5 +4,5 @@ import reducer from "../features/app.slice";
 
 export const store = configureStore({
   reducer,
-  middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat(logger),
+  // middleware: (getDefaultMiddlewares) => getDefaultMiddlewares().concat(logger),
 });

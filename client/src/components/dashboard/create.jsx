@@ -15,7 +15,10 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useDispatch } from "react-redux";
 import { useAuth } from "@clerk/clerk-react";
-import { publishQuiz } from "../../features/app.slice";
+import { publishQuiz, saveQuizDraft } from "../../features/app.slice";
+import { toast, Toaster } from "react-hot-toast";
+import confetti from "canvas-confetti";
+import QuizUrlModal from "./quiz-url-modal";
 
 function CreateQuizSlider({ isOpen, onClose }) {
   const dispatch = useDispatch();
@@ -36,6 +39,8 @@ function CreateQuizSlider({ isOpen, onClose }) {
       image: null,
     },
   ]);
+  const [quizUrl, setQuizUrl] = useState("");
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const titleInputRef = useRef(null);
 
@@ -172,7 +177,32 @@ function CreateQuizSlider({ isOpen, onClose }) {
 
   const handlePublish = async (e) => {
     e.preventDefault();
-    const quizData = {
+
+    // Validate title
+    if (!title.trim()) {
+      toast.error("Please enter a quiz title");
+      return;
+    }
+
+    // Validate questions
+    for (let i = 0; i < questions.length; i++) {
+      if (!questions[i].text.trim()) {
+        toast.error(`Please enter the text for question ${i + 1}`);
+        return;
+      }
+      if (questions[i].options.some((opt) => !opt.text.trim())) {
+        toast.error(`Please fill in all options for question ${i + 1}`);
+        return;
+      }
+      if (questions[i].correctAnswers.length === 0) {
+        toast.error(
+          `Please select at least one correct answer for question ${i + 1}`
+        );
+        return;
+      }
+    }
+
+    const payload = {
       title,
       desc: "A quiz created using our platform.",
       timeLimit: timeLimit,
@@ -185,15 +215,26 @@ function CreateQuizSlider({ isOpen, onClose }) {
         image: q.image,
       })),
     };
-    console.log(quizData);
-    const token = await getToken();
-    dispatch(publishQuiz({ token, quizData }));
-    onClose();
+
+    try {
+      const token = await getToken();
+      const response = await dispatch(publishQuiz({ token, payload }));
+      // Using a dummy quizUrl for now
+      const dummyQuizUrl = "https://example.com/quiz/123456";
+      setQuizUrl(dummyQuizUrl);
+      setIsModalOpen(true);
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    } catch (error) {
+      toast.error("An error occurred while publishing the quiz");
+    }
   };
 
-  const saveAsDraft = async (e) => {
-    e.preventDefault();
-    const quizData = {
+  const saveAsDraft = async () => {
+    const payload = {
       title,
       desc: "A quiz created using our platform.",
       timeLimit: timeLimit,
@@ -206,9 +247,9 @@ function CreateQuizSlider({ isOpen, onClose }) {
         image: q.image,
       })),
     };
-    console.log(quizData);
+    console.log("draft", payload);
     const token = await getToken();
-    dispatch(publishQuiz({ token, quizData }));
+    dispatch(saveQuizDraft({ token, payload }));
     onClose();
   };
 
@@ -281,7 +322,9 @@ function CreateQuizSlider({ isOpen, onClose }) {
                     type="number"
                     id="numQuestions"
                     value={numQuestions}
-                    onChange={(e) => setNumQuestions(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setNumQuestions(Number.parseInt(e.target.value))
+                    }
                     min="1"
                     placeholder="Enter number of questions"
                     className="w-full pl-10 py-2 bg-white bg-opacity-10 rounded-md border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -302,7 +345,9 @@ function CreateQuizSlider({ isOpen, onClose }) {
                     type="number"
                     id="timeLimit"
                     value={timeLimit}
-                    onChange={(e) => setTimeLimit(parseInt(e.target.value))}
+                    onChange={(e) =>
+                      setTimeLimit(Number.parseInt(e.target.value))
+                    }
                     min="1"
                     placeholder="Enter time limit in minutes"
                     className="w-full pl-10 py-2 bg-white bg-opacity-10 rounded-md border border-gray-600 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -363,7 +408,7 @@ function CreateQuizSlider({ isOpen, onClose }) {
                       >
                         {question.image ? (
                           <img
-                            src={question.image}
+                            src={question.image || "/placeholder.svg"}
                             alt="Question"
                             className="max-w-full h-auto mb-2"
                           />
@@ -486,6 +531,17 @@ function CreateQuizSlider({ isOpen, onClose }) {
             </motion.form>
           </div>
         </motion.div>
+      )}
+      <Toaster />
+      {isModalOpen && (
+        <QuizUrlModal
+          quizUrl={quizUrl}
+          isOpen={isModalOpen}
+          onClose={() => {
+            setIsModalOpen(false);
+            onClose();
+          }}
+        />
       )}
     </AnimatePresence>
   );

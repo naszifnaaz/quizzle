@@ -5,6 +5,7 @@ const Attempt = require("../models/attempt.model");
 // Save quiz as draft
 exports.draftQuiz = async (req, res) => {
   try {
+    console.log(req.body);
     const { title, desc, questions, timeLimit } = req.body;
     const user = await User.findOne({ clerkId: req.auth.userId });
 
@@ -33,6 +34,7 @@ exports.draftQuiz = async (req, res) => {
 // Publish quiz and generate unique link
 exports.publishQuiz = async (req, res) => {
   try {
+    console.log(req.body);
     const { title, desc, questions, timeLimit } = req.body;
     const user = await User.findOne({ clerkId: req.auth.userId });
 

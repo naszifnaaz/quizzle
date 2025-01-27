@@ -20,13 +20,14 @@ exports.getMyQuizzes = async (req, res) => {
 // Get all quizzes attempted by the user
 exports.getMyAttempts = async (req, res) => {
   try {
-    const user = await User.findOne({ clerkId: req.auth.userId }).populate({
-      path: "attempted",
-      populate: {
-        path: "quiz", // Populate the quiz field in the attempted array
-        model: "Quiz",
-      },
-    });
+    const user =
+      (await User.findOne({ clerkId: req.auth.userId }).populate({
+        path: "attempted",
+        populate: {
+          path: "quiz", // Populate the quiz field in the attempted array
+          model: "Quiz",
+        },
+      })) || [];
     res.status(200).json({
       count: user.attempted.length,
       attempted: user.attempted,
@@ -39,9 +40,8 @@ exports.getMyAttempts = async (req, res) => {
 // Get all published quizzes available for users
 exports.getAvailableQuizzes = async (req, res) => {
   try {
-    const available = await Quiz.find({ status: "Published" }).populate(
-      "creator"
-    );
+    const available =
+      (await Quiz.find({ status: "Published" }).populate("creator")) || [];
     res.status(200).json({
       count: available.length,
       available,

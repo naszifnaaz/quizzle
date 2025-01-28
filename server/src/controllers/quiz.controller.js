@@ -35,6 +35,7 @@ exports.draftQuiz = async (req, res) => {
 exports.publishQuiz = async (req, res) => {
   try {
     console.log(req.body);
+    console.log("req.auth", req.auth);
     const { title, desc, questions, timeLimit } = req.body;
     const user = await User.findOne({ clerkId: req.auth.userId });
 

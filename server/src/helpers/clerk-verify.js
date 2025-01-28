@@ -1,16 +1,23 @@
-const crypto = require("crypto");
+const { Webhook } = require("svix");
 require("dotenv").config();
 
-// Helper function to verify the Clerk webhook signature
 function verifyClerkSignature(req) {
-  const signature = req.headers["clerk-signature"];
-  const rawBody = JSON.stringify(req.body);
-  const hash = crypto
-    .createHmac("sha256", process.env.CLIENT_WEBHOOK_SECRET)
-    .update(rawBody)
-    .digest("hex");
+  const svix = new Webhook(process.env.CLERK_WEBHOOK_SECRET); // Use your Clerk webhook secret here
 
-  return hash === signature;
+  try {
+    // Parse and verify the incoming request
+    const payload = req.rawBody || JSON.stringify(req.body);
+    const headers = req.headers;
+
+    // Verify signature
+    svix.verify(payload, headers);
+
+    // If the signature is valid, return true
+    return true;
+  } catch (error) {
+    console.error("Invalid Svix signature:", error.message);
+    return false; // Signature verification failed
+  }
 }
 
 module.exports = verifyClerkSignature;

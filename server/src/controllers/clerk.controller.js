@@ -2,9 +2,9 @@ const User = require("../models/user.model");
 const verifyClerkSignature = require("../helpers/clerk-verify");
 
 const handleClerkWebhook = async (req, res) => {
-  // if (!verifyClerkSignature(req)) {
-  //   return res.status(403).json({ error: "Invalid signature" });
-  // }
+  if (!verifyClerkSignature(req)) {
+    return res.status(403).json({ error: "Invalid signature" });
+  }
 
   const event = req.body;
 

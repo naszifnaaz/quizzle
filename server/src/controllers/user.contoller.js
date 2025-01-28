@@ -8,6 +8,14 @@ exports.getMyQuizzes = async (req, res) => {
     const user = await User.findOne({ clerkId: req.auth.userId }).populate(
       "created"
     );
+
+    if (!user || !user.created || user.created.length === 0) {
+      return res.status(200).json({
+        count: 0,
+        created: [],
+      });
+    }
+
     res.status(200).json({
       count: user.created.length,
       created: user.created,
@@ -20,14 +28,21 @@ exports.getMyQuizzes = async (req, res) => {
 // Get all quizzes attempted by the user
 exports.getMyAttempts = async (req, res) => {
   try {
-    const user =
-      (await User.findOne({ clerkId: req.auth.userId }).populate({
-        path: "attempted",
-        populate: {
-          path: "quiz", // Populate the quiz field in the attempted array
-          model: "Quiz",
-        },
-      })) || [];
+    const user = await User.findOne({ clerkId: req.auth.userId }).populate({
+      path: "attempted",
+      populate: {
+        path: "quiz", // Populate the quiz field in the attempted array
+        model: "Quiz",
+      },
+    });
+
+    if (!user || !user.attempted || user.attempted.length === 0) {
+      return res.status(200).json({
+        count: 0,
+        attempted: [],
+      });
+    }
+
     res.status(200).json({
       count: user.attempted.length,
       attempted: user.attempted,

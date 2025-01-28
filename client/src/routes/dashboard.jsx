@@ -13,6 +13,8 @@ import {
   fetchMyAttempts,
   fetchMyQuizzes,
 } from "../features/app.slice";
+import EmptyState from "../components/dashboard/empty-state";
+import emptyImage from "../assets/empty.svg";
 
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
@@ -129,38 +131,61 @@ function Dashboard() {
               transition={{ duration: 0.5, delay: 0.4 }}
               className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
             >
-              {getQuizzesToDisplay().map((quiz, index) => (
-                <motion.div
-                  key={quiz.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  {selectedOption === "Attempts" ? (
-                    <ParticipatedQuizCard quiz={quiz} />
-                  ) : (
-                    <QuizCard quiz={quiz} />
-                  )}
-                </motion.div>
-              ))}
-            </motion.div>
-            <div className="mt-8 flex justify-center">
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map(
-                (page) => (
-                  <button
-                    key={page}
-                    onClick={() => setCurrentPage(page)}
-                    className={`mx-1 px-3 py-1 rounded ${
-                      currentPage === page
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    }`}
+              {getQuizzesToDisplay().length > 0 ? (
+                getQuizzesToDisplay().map((quiz, index) => (
+                  <motion.div
+                    key={quiz.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
-                    {page}
-                  </button>
-                )
+                    {selectedOption === "Attempts" ? (
+                      <ParticipatedQuizCard quiz={quiz} />
+                    ) : (
+                      <QuizCard quiz={quiz} />
+                    )}
+                  </motion.div>
+                ))
+              ) : (
+                <div className="col-span-3">
+                  <EmptyState
+                    message={
+                      selectedOption === "Created"
+                        ? "You haven't created any quizzes yet"
+                        : selectedOption === "Attempts"
+                        ? "You haven't attempted any quizzes yet"
+                        : "No quizzes available at the moment"
+                    }
+                    imageSrc={
+                      selectedOption === "Created"
+                        ? emptyImage
+                        : selectedOption === "Attempts"
+                        ? emptyImage
+                        : emptyImage
+                    }
+                  />
+                </div>
               )}
-            </div>
+            </motion.div>
+            {getQuizzesToDisplay().length > 0 && (
+              <div className="mt-8 flex justify-center">
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                  (page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`mx-1 px-3 py-1 rounded ${
+                        currentPage === page
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  )
+                )}
+              </div>
+            )}
           </>
         ) : (
           <motion.div

@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import { ClerkProvider } from "@clerk/clerk-react";
 import { Provider as ReduxProvider } from "react-redux";
 import { store } from "./app/store.js";
-// Import your publishable key
+
 const PUBLISHABLE_KEY =
   "pk_test_c3VidGxlLXNoZWVwLTMxLmNsZXJrLmFjY291bnRzLmRldiQ";
 

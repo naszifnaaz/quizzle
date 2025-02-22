@@ -247,7 +247,7 @@ function CreateQuizSlider({ isOpen, onClose }) {
         image: q.image,
       })),
     };
-    console.log("draft", payload);
+
     const token = await getToken();
     dispatch(saveQuizDraft({ token, payload }));
     onClose();

@@ -2,7 +2,7 @@ const { Webhook } = require("svix");
 require("dotenv").config();
 
 function verifyClerkSignature(req) {
-  const svix = new Webhook(process.env.CLERK_WEBHOOK_SECRET); // Use your Clerk webhook secret here
+  const svix = new Webhook(process.env.CLERK_WEBHOOK_SECRET);
 
   try {
     // Parse and verify the incoming request

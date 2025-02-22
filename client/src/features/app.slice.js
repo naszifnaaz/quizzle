@@ -10,6 +10,8 @@ const initialState = {
   error: null,
 };
 
+const BASE_URL = "http://localhost:8080";
+
 // Async thunks for fetching data
 export const fetchMyQuizzes = createAsyncThunk(
   "app/fetchMyQuizzes",
@@ -34,14 +36,11 @@ export const fetchMyAttempts = createAsyncThunk(
   "app/fetchMyAttempts",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/user/my-attempts",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/user/my-attempts`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -53,14 +52,11 @@ export const fetchAvailableQuizzes = createAsyncThunk(
   "app/fetchAvailableQuizzes",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/user/available",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/user/available`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -73,16 +69,11 @@ export const saveQuizDraft = createAsyncThunk(
   "app/saveQuizDraft",
   async ({ token, payload }, { rejectWithValue }) => {
     try {
-      console.log("slice", payload);
-      const response = await axios.post(
-        "http://localhost:8080/api/quiz/draft",
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.post(`${BASE_URL}/api/quiz/draft`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data?.message || error.message);
@@ -94,9 +85,8 @@ export const publishQuiz = createAsyncThunk(
   "app/publishQuiz",
   async ({ token, payload }, { rejectWithValue }) => {
     try {
-      console.log(payload);
       const response = await axios.post(
-        "http://localhost:8080/api/quiz/publish",
+        `${BASE_URL}/api/quiz/publish`,
         payload,
         {
           headers: {

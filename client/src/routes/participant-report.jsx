@@ -6,7 +6,6 @@ import {
   ArrowLeftIcon,
 } from "@heroicons/react/24/solid";
 import { motion } from "framer-motion";
-import { NavBar } from "../components/shared/navbar";
 import { mockReport } from "../data/quiz-data";
 
 export default function ParticipantReport() {
@@ -14,25 +13,8 @@ export default function ParticipantReport() {
   const [report, setReport] = useState(null);
 
   useEffect(() => {
-    // Add a class to the body for global styles
-    document.body.classList.add(
-      "bg-gradient-to-br",
-      "from-indigo-900",
-      "to-purple-900",
-      "text-white"
-    );
-
     // In a real app, you'd fetch this data based on quizId and username
     setReport(mockReport);
-
-    return () => {
-      document.body.classList.remove(
-        "bg-gradient-to-br",
-        "from-indigo-900",
-        "to-purple-900",
-        "text-white"
-      );
-    };
   }, [quizId, username]);
 
   if (!report) {
@@ -41,7 +23,6 @@ export default function ParticipantReport() {
 
   return (
     <div className="min-h-screen">
-      <NavBar />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

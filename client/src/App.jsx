@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { Route, Routes } from "react-router-dom";
 import QuizBuilderLandingPage from "./routes/home";
 import Dashboard from "./routes/dashboard";
@@ -6,12 +7,20 @@ import ParticipantReport from "./routes/participant-report";
 import QuizView from "./routes/quiz-view";
 import QuizResultPage from "./routes/quiz-results";
 import { Toaster } from "react-hot-toast";
+import { Login } from "./routes/login";
+import { Register } from "./routes/register";
+import { ResetPassword } from "./routes/reset-password";
+import { NavBar } from "./components/shared/navbar";
 
 export default function App() {
   return (
-    <>
+    <div>
+      <NavBar />
       <Routes>
         <Route path="/" element={<QuizBuilderLandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/quiz/:id" element={<QuizDetails />} />
         <Route
@@ -22,6 +31,6 @@ export default function App() {
         <Route path="/quiz-results" element={<QuizResultPage />} />
       </Routes>
       <Toaster position="top-center" reverseOrder={false} />
-    </>
+    </div>
   );
 }

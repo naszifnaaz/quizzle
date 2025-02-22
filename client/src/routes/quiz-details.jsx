@@ -9,7 +9,6 @@ import {
   ArrowLeftIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
-import { NavBar } from "../components/shared/navbar";
 import { participants, quizzes } from "../data/quiz-data";
 
 export default function QuizDetails() {
@@ -45,7 +44,6 @@ export default function QuizDetails() {
 
   return (
     <div className="min-h-screen">
-      <NavBar />
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}

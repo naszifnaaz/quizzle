@@ -7,7 +7,6 @@ import {
   BeakerIcon,
 } from "@heroicons/react/24/outline";
 import { FaTrophy, FaUser, FaClock, FaChartBar } from "react-icons/fa";
-import { NavBar } from "../components/shared/navbar";
 
 // Merged UserQuizDetails Component
 const UserQuizDetails = ({ user, quizDetails }) => (
@@ -357,7 +356,6 @@ const QuizResultPage = () => {
 
   return (
     <>
-      <NavBar />
       <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold text-center mb-12 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">

@@ -4,7 +4,6 @@ import CreateQuizSlider from "../components/dashboard/create";
 import ToggleButton from "../components/dashboard/toggle-button";
 import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
-import { NavBar } from "../components/shared/navbar";
 import { motion } from "framer-motion";
 import { useUser, SignInButton, useAuth } from "@clerk/clerk-react";
 import { useDispatch, useSelector } from "react-redux";
@@ -39,26 +38,6 @@ function Dashboard() {
     dispatch(fetchAvailableQuizzes(token));
   }
 
-  useEffect(() => {
-    document.body.classList.add(
-      "bg-gradient-to-br",
-      "from-indigo-900",
-      "to-purple-900",
-      "text-white"
-    );
-
-    getQuizzes();
-
-    return () => {
-      document.body.classList.remove(
-        "bg-gradient-to-br",
-        "from-indigo-900",
-        "to-purple-900",
-        "text-white"
-      );
-    };
-  }, []);
-
   const getQuizzesToDisplay = () => {
     let quizzes;
     switch (selectedOption) {
@@ -89,7 +68,6 @@ function Dashboard() {
 
   return (
     <div className="min-h-screen overflow-hidden">
-      <NavBar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <motion.div
           initial={{ opacity: 0, y: -20 }}

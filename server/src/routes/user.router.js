@@ -1,10 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const userController = require("../controllers/user.contoller");
-const { requireAuth } = require("@clerk/express");
+const authController = require("../controllers/auth.controller");
+const { authenticateUser } = require("../helpers/jwt-handler");
 
-router.get("/my-quizzes", requireAuth(), userController.getMyQuizzes);
-router.get("/my-attempts", requireAuth(), userController.getMyAttempts);
-router.get("/available", requireAuth(), userController.getAvailableQuizzes);
+//auth routes
+router.post("/register", authController.register);
+router.post("/login", authController.login);
+
+router.get("/my-quizzes", authenticateUser, userController.getMyQuizzes);
+router.get("/my-attempts", authenticateUser, userController.getMyAttempts);
+router.get("/available", authenticateUser, userController.getAvailableQuizzes);
 
 module.exports = router;

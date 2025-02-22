@@ -6,7 +6,7 @@ const Attempt = require("../models/attempt.model");
 exports.draftQuiz = async (req, res) => {
   try {
     const { title, desc, questions, timeLimit } = req.body;
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    const user = await User.findOne({ email: req.auth.email });
 
     const quiz = new Quiz({
       title: title || "NA",
@@ -34,7 +34,7 @@ exports.draftQuiz = async (req, res) => {
 exports.publishQuiz = async (req, res) => {
   try {
     const { title, desc, questions, timeLimit } = req.body;
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    const user = await User.findOne({ email: req.auth.email });
 
     const quiz = new Quiz({
       title,
@@ -66,7 +66,7 @@ exports.submitQuiz = async (req, res) => {
   try {
     const { answers, timeTaken } = req.body;
     const quizId = req.params.id;
-    const user = await User.findOne({ clerkId: req.auth.userId });
+    const user = await User.findOne({ email: req.auth.email });
 
     const quiz = await Quiz.findById(quizId);
 
@@ -115,53 +115,6 @@ exports.submitQuiz = async (req, res) => {
   }
 };
 
-// Get all quizzes created by the logged-in user
-exports.getMyQuizzes = async (req, res) => {
-  try {
-    const user = await User.findOne({ clerkId: req.auth.userId }).populate(
-      "createdQuizzes"
-    );
-    res.status(200).json({
-      count: user.createdQuizzes.length,
-      createdQuizzes: user.createdQuizzes,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Get all quizzes attempted by the user
-exports.getMyAttempts = async (req, res) => {
-  try {
-    const user = await User.findOne({ clerkId: req.auth.userId }).populate({
-      path: "attemptedQuizzes",
-      populate: {
-        path: "quiz", // Populate the quiz details inside each attempted quiz
-        model: "Quiz",
-      },
-    });
-    res.status(200).json({
-      count: user.attemptedQuizzes.length,
-      attemptedQuizzes: user.attemptedQuizzes,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-// Get all published quizzes available for users
-exports.getAvailableQuizzes = async (req, res) => {
-  try {
-    const quizzes = await Quiz.find({ status: "Published" });
-    res.status(200).json({
-      count: quizzes.length,
-      quizzes,
-    });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 // Get quiz details by ID
 exports.getQuizById = async (req, res) => {
   try {
@@ -180,7 +133,7 @@ exports.getQuizResults = async (req, res) => {
   try {
     const attempt = await Attempt.findOne({
       quiz: req.params.id,
-      user: (await User.findOne({ clerkId: req.auth.userId }))._id,
+      user: (await User.findOne({ email: req.auth.email }))._id,
     });
     if (!attempt) {
       return res.status(404).json({ error: "Results not found" });

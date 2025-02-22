@@ -1,3 +1,5 @@
+// @deprecated
+
 const User = require("../models/user.model");
 const verifyClerkSignature = require("../helpers/clerk-verify");
 

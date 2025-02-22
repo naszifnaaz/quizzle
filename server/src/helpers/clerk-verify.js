@@ -1,3 +1,5 @@
+// deprecated
+
 const { Webhook } = require("svix");
 require("dotenv").config();
 

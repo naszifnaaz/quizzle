@@ -1,3 +1,5 @@
+// deprecated - clerk dependency
+
 const express = require("express");
 const { handleClerkWebhook } = require("../controllers/clerk.controller");
 

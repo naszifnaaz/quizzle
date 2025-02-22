@@ -15,7 +15,7 @@ export const NavBar = () => {
     name: "John Doe",
     avatar: "https://api.dicebear.com/7.x/initials/svg?seed=John%20Doe",
   };
-  const isAuthenticated = true; // Change this based on actual auth state
+  const isAuthenticated = false; // Change this based on actual auth state
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -98,18 +98,13 @@ export const NavBar = () => {
               )}
             </div>
           ) : (
-            <div className="flex gap-4">
+            <div className="flex">
               <Link
                 to="/login"
-                className="bg-white text-indigo-900 px-4 py-2 rounded-md font-medium hover:bg-gray-100"
+                className="flex items-center bg-indigo-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-indigo-700"
               >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="bg-indigo-500 text-white px-4 py-2 rounded-md font-medium hover:bg-indigo-600"
-              >
-                Register
+                <UserIcon className="h-4 w-4 mr-2" />
+                Join Quizzle!
               </Link>
             </div>
           )}

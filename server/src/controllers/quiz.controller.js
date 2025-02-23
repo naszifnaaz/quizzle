@@ -9,8 +9,8 @@ exports.draftQuiz = async (req, res) => {
     const user = await User.findById(req.auth._id);
 
     const quiz = new Quiz({
-      title: title || "NA",
-      desc: desc || "NA",
+      title: title || "",
+      desc: desc || "",
       creator: user._id,
       questions: questions || [],
       timeLimit: timeLimit || 10,
@@ -26,6 +26,7 @@ exports.draftQuiz = async (req, res) => {
 
     res.status(201).json(quiz);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -53,9 +54,9 @@ exports.publishQuiz = async (req, res) => {
     });
 
     // Generate unique URL
-    const quizUrl = `https://quizzle.com/quiz/${quiz._id}`;
+    const quizURL = `https://quizzle.com/quiz/${quiz._id}`;
 
-    res.status(201).json({ quizUrl });
+    res.status(201).json({ quizURL });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

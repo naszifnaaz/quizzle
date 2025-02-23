@@ -13,8 +13,7 @@ import {
   PhotoIcon,
 } from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch } from "react-redux";
-import { useAuth } from "@clerk/clerk-react";
+import { useDispatch, useSelector } from "react-redux";
 import { publishQuiz, saveQuizDraft } from "../../features/app.slice";
 import { toast, Toaster } from "react-hot-toast";
 import confetti from "canvas-confetti";
@@ -22,7 +21,6 @@ import QuizUrlModal from "./quiz-url-modal";
 
 function CreateQuizSlider({ isOpen, onClose }) {
   const dispatch = useDispatch();
-  const { getToken } = useAuth();
   const [title, setTitle] = useState("");
   const [numQuestions, setNumQuestions] = useState(1);
   const [timeLimit, setTimeLimit] = useState(10);
@@ -39,10 +37,10 @@ function CreateQuizSlider({ isOpen, onClose }) {
       image: null,
     },
   ]);
-  const [quizUrl, setQuizUrl] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-
   const titleInputRef = useRef(null);
+  const token = useSelector((store) => store.token);
+  const publishedURL = useSelector((store) => store.publishedURL);
 
   useEffect(() => {
     if (isOpen && titleInputRef.current) {
@@ -216,12 +214,10 @@ function CreateQuizSlider({ isOpen, onClose }) {
       })),
     };
 
+    console.log(payload);
+
     try {
-      const token = await getToken();
-      const response = await dispatch(publishQuiz({ token, payload }));
-      // Using a dummy quizUrl for now
-      const dummyQuizUrl = "https://example.com/quiz/123456";
-      setQuizUrl(dummyQuizUrl);
+      dispatch(publishQuiz({ token, payload }));
       setIsModalOpen(true);
       confetti({
         particleCount: 100,
@@ -248,7 +244,6 @@ function CreateQuizSlider({ isOpen, onClose }) {
       })),
     };
 
-    const token = await getToken();
     dispatch(saveQuizDraft({ token, payload }));
     onClose();
   };
@@ -535,7 +530,7 @@ function CreateQuizSlider({ isOpen, onClose }) {
       <Toaster />
       {isModalOpen && (
         <QuizUrlModal
-          quizUrl={quizUrl}
+          quizUrl={publishedURL}
           isOpen={isModalOpen}
           onClose={() => {
             setIsModalOpen(false);

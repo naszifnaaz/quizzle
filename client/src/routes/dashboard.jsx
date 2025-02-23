@@ -5,7 +5,6 @@ import ToggleButton from "../components/dashboard/toggle-button";
 import { useState, useEffect } from "react";
 import { PlusCircleIcon } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
-import { useUser, SignInButton, useAuth } from "@clerk/clerk-react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAvailableQuizzes,
@@ -14,13 +13,12 @@ import {
 } from "../features/app.slice";
 import EmptyState from "../components/dashboard/empty-state";
 import emptyImage from "../assets/empty.svg";
+import { Link } from "react-router-dom";
 
 function Dashboard() {
   const [isCreateQuizOpen, setIsCreateQuizOpen] = useState(false);
   const [selectedOption, setSelectedOption] = useState("Created");
   const [currentPage, setCurrentPage] = useState(1);
-  const { isSignedIn } = useUser();
-  const { getToken } = useAuth();
   const dispatch = useDispatch();
   const createdQuizzes =
     useSelector((store) => store.createdQuizzes.created) || [];
@@ -28,15 +26,18 @@ function Dashboard() {
     useSelector((store) => store.attemptedQuizzes.attempted) || [];
   const availableQuizzes =
     useSelector((store) => store.availableQuizzes.available) || [];
+  const token = useSelector((store) => store.token);
+  const isLoggedIn = useSelector((store) => store.isLoggedIn);
 
   const itemsPerPage = 6;
 
-  async function getQuizzes() {
-    const token = await getToken();
-    dispatch(fetchMyQuizzes(token));
-    dispatch(fetchMyAttempts(token));
-    dispatch(fetchAvailableQuizzes(token));
-  }
+  useEffect(() => {
+    if (token) {
+      dispatch(fetchMyQuizzes(token));
+      dispatch(fetchMyAttempts(token));
+      dispatch(fetchAvailableQuizzes(token));
+    }
+  }, [token, dispatch]);
 
   const getQuizzesToDisplay = () => {
     let quizzes;
@@ -78,7 +79,7 @@ function Dashboard() {
           <h2 className="text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
             My Quizzes
           </h2>
-          {isSignedIn ? (
+          {isLoggedIn ? (
             <button
               onClick={() => setIsCreateQuizOpen(true)}
               className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 flex items-center shadow-lg hover:shadow-xl transform hover:scale-105"
@@ -101,7 +102,7 @@ function Dashboard() {
           />
         </motion.div>
 
-        {isSignedIn ? (
+        {isLoggedIn ? (
           <>
             <motion.div
               initial={{ opacity: 0 }}
@@ -176,11 +177,11 @@ function Dashboard() {
             <p className="text-xl mb-8">
               Sign in to create and participate in quizzes!
             </p>
-            <SignInButton mode="modal">
+            <Link>
               <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                 Sign In
               </button>
-            </SignInButton>
+            </Link>
           </motion.div>
         )}
       </main>

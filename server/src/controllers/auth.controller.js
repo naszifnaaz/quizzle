@@ -81,6 +81,7 @@ exports.getCurrentUser = async (req, res) => {
         email: user.email,
         avatar: user.avatar,
       },
+      token: req.auth.token,
     });
   } catch (error) {
     return res.status(500).json({ message: "Server error" });

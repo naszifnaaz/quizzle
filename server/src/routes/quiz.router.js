@@ -4,7 +4,7 @@ const quizController = require("../controllers/quiz.controller");
 const { authenticateUser } = require("../helpers/jwt-handler");
 
 // Quiz routes
-router.post("/draft", quizController.draftQuiz);
+router.post("/draft", authenticateUser, quizController.draftQuiz);
 router.post("/publish", authenticateUser, quizController.publishQuiz);
 router.put("/:id", authenticateUser, quizController.updateQuiz);
 router.get("/:id", quizController.getQuizById);

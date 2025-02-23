@@ -8,7 +8,6 @@ import {
   BookOpenIcon,
 } from "@heroicons/react/24/outline";
 
-import { SignIn, useUser } from "@clerk/clerk-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { quizData } from "../data/quiz-data";

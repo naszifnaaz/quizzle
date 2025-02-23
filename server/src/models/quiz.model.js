@@ -13,6 +13,14 @@ const questionSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  hasImage: {
+    type: Boolean,
+    default: false,
+  },
+  image: {
+    type: String,
+    default: null,
+  },
 });
 
 const quizSchema = new mongoose.Schema(

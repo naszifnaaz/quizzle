@@ -7,6 +7,7 @@ const initialState = {
   createdQuizzes: {},
   attemptedQuizzes: {},
   availableQuizzes: {},
+  publishedURL: null,
   user: null,
   token: localStorage.getItem("token") || "",
   error: null,
@@ -270,8 +271,9 @@ const userSlice = createSlice({
         state.isLoading = true;
         state.error = null;
       })
-      .addCase(publishQuiz.fulfilled, (state) => {
+      .addCase(publishQuiz.fulfilled, (state, action) => {
         state.isLoading = false;
+        state.publishedURL = action.payload.quizURL;
       })
       .addCase(publishQuiz.rejected, (state, action) => {
         state.isLoading = false;

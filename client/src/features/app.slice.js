@@ -7,24 +7,65 @@ const initialState = {
   createdQuizzes: {},
   attemptedQuizzes: {},
   availableQuizzes: {},
+  user: null,
+  token: localStorage.getItem("token") || "",
   error: null,
 };
 
 const BASE_URL = "http://localhost:8080";
+
+// User auth thunks
+export const userLogin = createAsyncThunk(
+  "app/login",
+  async (user, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/user/login`, user);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const userRegister = createAsyncThunk(
+  "app/register",
+  async (user, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(`${BASE_URL}/api/user/register`, user);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
+export const initializeUser = createAsyncThunk(
+  "app/initializeUser",
+  async (_, { rejectWithValue }) => {
+    const token = localStorage.getItem("token");
+    if (!token) return rejectWithValue("No token found");
+
+    try {
+      const response = await axios.get(`${BASE_URL}/api/user/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
 
 // Async thunks for fetching data
 export const fetchMyQuizzes = createAsyncThunk(
   "app/fetchMyQuizzes",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(
-        "http://localhost:8080/api/user/my-quizzes",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      const response = await axios.get(`${BASE_URL}/api/user/my-quizzes`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -104,9 +145,75 @@ export const publishQuiz = createAsyncThunk(
 const userSlice = createSlice({
   name: "app",
   initialState,
-  reducers: {},
+  reducers: {
+    userLogout: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isLoggedIn = false;
+      localStorage.removeItem("token");
+    },
+  },
   extraReducers: (builder) => {
     builder
+      // Handle User Auth
+      .addCase(userLogin.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+        state.user = {};
+        state.token = "";
+        localStorage.removeItem("token");
+      })
+      .addCase(userLogin.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
+      })
+
+      .addCase(userLogin.rejected, (state, action) => {
+        state.isLoading = true;
+        state.error = null;
+        state.user = {};
+        state.token = "";
+        localStorage.removeItem("token");
+      })
+
+      .addCase(userRegister.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+        state.user = {};
+        state.token = "";
+        localStorage.removeItem("token");
+      })
+      .addCase(userRegister.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isLoggedIn = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+        localStorage.setItem("token", action.payload.token);
+      })
+
+      .addCase(userRegister.rejected, (state, action) => {
+        state.isLoading = true;
+        state.error = null;
+        state.user = {};
+        state.token = "";
+        localStorage.removeItem("token");
+      })
+
+      .addCase(initializeUser.fulfilled, (state, action) => {
+        state.isLoggedIn = true;
+        state.user = action.payload.user;
+        state.token = action.payload.token;
+      })
+      .addCase(initializeUser.rejected, (state) => {
+        state.isLoggedIn = false;
+        state.user = null;
+        state.token = "";
+        localStorage.removeItem("token"); // Remove invalid token
+      })
+
       // Handle fetchMyQuizzes
       .addCase(fetchMyQuizzes.pending, (state) => {
         state.isLoading = true;
@@ -173,4 +280,5 @@ const userSlice = createSlice({
   },
 });
 
+export const { userLogout } = userSlice.actions;
 export default userSlice.reducer;

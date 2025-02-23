@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -8,15 +10,36 @@ import {
   UserIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import { userRegister } from "../features/app.slice";
+import { toast } from "react-hot-toast";
 
 export function Register() {
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isLoading = useSelector((store) => store.isLoading);
+
+  const [registerForm, setRegisterForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  function handleChange(e) {
+    const { id, value } = e.target;
+    setRegisterForm({ ...registerForm, [id]: value });
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Add your registration logic here
-    setTimeout(() => setIsLoading(false), 3000);
+    dispatch(userRegister(registerForm))
+      .unwrap()
+      .then((res) => {
+        toast.success(res.message);
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        toast.error(error.message || "Registration failed");
+      });
   };
 
   return (
@@ -134,6 +157,7 @@ export function Register() {
                   required
                   className="w-full pl-11 pr-4 py-4 bg-white bg-opacity-5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
                   placeholder="John Doe"
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
             </motion.div>
@@ -160,6 +184,7 @@ export function Register() {
                   required
                   className="w-full pl-11 pr-4 py-4 bg-white bg-opacity-5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
                   placeholder="m@example.com"
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
             </motion.div>
@@ -186,6 +211,7 @@ export function Register() {
                   required
                   className="w-full pl-11 pr-4 py-4 bg-white bg-opacity-5 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
                   placeholder="••••••••"
+                  onChange={(e) => handleChange(e)}
                 />
               </div>
             </motion.div>

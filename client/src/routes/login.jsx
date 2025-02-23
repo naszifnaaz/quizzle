@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import {
@@ -7,15 +8,36 @@ import {
   LockClosedIcon,
   UserCircleIcon,
 } from "@heroicons/react/24/outline";
+import { userLogin } from "../features/app.slice";
+import { toast } from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 export function Login() {
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const isLoading = useSelector((store) => store.isLoading);
+
+  const [loginForm, setLoginForm] = useState({
+    email: "",
+    password: "",
+  });
+
+  function handleChange(e) {
+    const { id, value } = e.target;
+    setLoginForm({ ...loginForm, [id]: value });
+  }
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setIsLoading(true);
-    // Add your login logic here
-    setTimeout(() => setIsLoading(false), 3000);
+    dispatch(userLogin(loginForm))
+      .unwrap()
+      .then((res) => {
+        toast.success(res.message || "Login successfull");
+        navigate("/dashboard");
+      })
+      .catch((error) => {
+        toast.error(error.message || "Login failed. Please try again.");
+      });
   };
 
   return (
@@ -91,6 +113,7 @@ export function Login() {
                     required
                     className="w-full pl-11 pr-4 py-4 bg-white bg-opacity-5 border border-gray-700 rounded-xl text-white placeholder-gray-500 focus:outline-none focus:border-purple-500 transition-colors"
                     placeholder="m@example.com"
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
               </motion.div>
@@ -117,6 +140,7 @@ export function Login() {
                     required
                     className="w-full pl-11 pr-4 py-4 bg-white bg-opacity-5 border border-gray-700 rounded-xl text-white focus:outline-none focus:border-purple-500 transition-colors"
                     placeholder="••••••••"
+                    onChange={(e) => handleChange(e)}
                   />
                 </div>
               </motion.div>
@@ -158,7 +182,7 @@ export function Login() {
           <div className="text-center text-gray-300 mt-8">
             Don't have an account?{" "}
             <Link
-              to="/auth/register"
+              to="/register"
               className="text-purple-400 hover:text-purple-300 transition-colors font-medium"
             >
               Sign up

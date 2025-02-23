@@ -7,6 +7,7 @@ const { authenticateUser } = require("../helpers/jwt-handler");
 //auth routes
 router.post("/register", authController.register);
 router.post("/login", authController.login);
+router.get("/me", authenticateUser, authController.getCurrentUser);
 
 router.get("/my-quizzes", authenticateUser, userController.getMyQuizzes);
 router.get("/my-attempts", authenticateUser, userController.getMyAttempts);

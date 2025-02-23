@@ -5,9 +5,7 @@ const Attempt = require("../models/attempt.model");
 // Get all quizzes created by the logged-in user
 exports.getMyQuizzes = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.auth.email }).populate(
-      "created"
-    );
+    const user = await User.findById(req.auth._id).populate("created");
 
     if (!user || !user.created || user.created.length === 0) {
       return res.status(200).json({
@@ -29,7 +27,7 @@ exports.getMyQuizzes = async (req, res) => {
 // Get all quizzes attempted by the user
 exports.getMyAttempts = async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.auth.email }).populate({
+    const user = await User.findById(req.auth._id).populate({
       path: "attempted",
       populate: {
         path: "quiz", // Populate the quiz field in the attempted array

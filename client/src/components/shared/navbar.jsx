@@ -6,16 +6,16 @@ import {
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { userLogout } from "../../features/app.slice";
 
 export const NavBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // Dummy user data (replace with real user state later)
-  const user = {
-    name: "John Doe",
-    avatar: "https://api.dicebear.com/7.x/initials/svg?seed=John%20Doe",
-  };
-  const isAuthenticated = false; // Change this based on actual auth state
+  const disaptch = useDispatch();
+  const navigate = useNavigate();
+  const isLoggedIn = useSelector((store) => store.isLoggedIn);
+  const user = useSelector((store) => store.user);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -56,7 +56,7 @@ export const NavBar = () => {
           </div>
         </Link>
         <div className="flex gap-6">
-          {isAuthenticated ? (
+          {isLoggedIn ? (
             <div className="relative menu-container">
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
@@ -88,8 +88,9 @@ export const NavBar = () => {
                   <button
                     className="flex w-full text-left items-center gap-3 px-4 py-2 hover:bg-gray-200"
                     onClick={() => {
-                      alert("Logged out");
+                      disaptch(userLogout());
                       handleMenuClick();
+                      navigate("/");
                     }}
                   >
                     <ArrowLeftOnRectangleIcon className="h-5 w-5" /> Logout

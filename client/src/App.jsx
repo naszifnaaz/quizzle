@@ -11,8 +11,15 @@ import { Login } from "./routes/login";
 import { Register } from "./routes/register";
 import { ResetPassword } from "./routes/reset-password";
 import { NavBar } from "./components/shared/navbar";
+import { useDispatch } from "react-redux";
+import { initializeUser } from "./features/app.slice";
 
 export default function App() {
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(initializeUser());
+  }, []);
   return (
     <div>
       <NavBar />

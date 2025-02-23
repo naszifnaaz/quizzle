@@ -1,13 +1,13 @@
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 
-const generateToken = (user) => {
-  return jwt.sign({ user }, process.env.JWT_SECRET_KEY);
+const generateToken = (userId) => {
+  return jwt.sign({ userId }, process.env.JWT_SECRET_KEY, { expiresIn: "7d" });
 };
 
 const authenticateUser = async (req, res, next) => {
   try {
-    const token = req.header("Authorization")?.split(" ")[1]; // Extract token from Bearer scheme
+    const token = req.header("Authorization")?.split(" ")[1];
     if (!token) {
       return res
         .status(401)
@@ -16,7 +16,8 @@ const authenticateUser = async (req, res, next) => {
 
     // Verify token
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.auth = decoded.user; // Attach user data from token to req.auth
+
+    req.auth = { _id: decoded.userId };
 
     next();
   } catch (error) {

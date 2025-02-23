@@ -6,7 +6,7 @@ const Attempt = require("../models/attempt.model");
 exports.draftQuiz = async (req, res) => {
   try {
     const { title, desc, questions, timeLimit } = req.body;
-    const user = await User.findOne({ email: req.auth.email });
+    const user = await User.findById(req.auth._id);
 
     const quiz = new Quiz({
       title: title || "NA",
@@ -34,7 +34,7 @@ exports.draftQuiz = async (req, res) => {
 exports.publishQuiz = async (req, res) => {
   try {
     const { title, desc, questions, timeLimit } = req.body;
-    const user = await User.findOne({ email: req.auth.email });
+    const user = await User.findById(req.auth._id);
 
     const quiz = new Quiz({
       title,
@@ -66,7 +66,7 @@ exports.submitQuiz = async (req, res) => {
   try {
     const { answers, timeTaken } = req.body;
     const quizId = req.params.id;
-    const user = await User.findOne({ email: req.auth.email });
+    const user = await User.findById(req.auth._id);
 
     const quiz = await Quiz.findById(quizId);
 

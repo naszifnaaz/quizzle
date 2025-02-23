@@ -21,10 +21,15 @@ exports.register = async (req, res) => {
     const token = generateToken(user._id);
     return res.status(200).send({
       message: "User registered!",
-      email: user.email,
+      user: {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
       token,
     });
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: error.message });
   }
 };
@@ -46,13 +51,38 @@ exports.login = async (req, res) => {
     }
 
     // if password matches, generate token
-    const token = generateToken(user);
+    const token = generateToken(user._id);
     return res.status(200).send({
-      email: user.email,
+      message: "Login successfull",
+      user: {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
       token,
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({ error: error.message });
+  }
+};
+
+exports.getCurrentUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.auth._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    return res.status(200).json({
+      user: {
+        name: user.name,
+        email: user.email,
+        avatar: user.avatar,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({ message: "Server error" });
   }
 };

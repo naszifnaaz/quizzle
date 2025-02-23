@@ -30,7 +30,7 @@ export default function ParticipantReport() {
         className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8"
       >
         <Link
-          to={`/quiz/${quizId}`}
+          to={`/quiz/details/${quizId}`}
           className="flex items-center text-blue-400 hover:text-blue-300 mb-6 transition duration-300"
         >
           <ArrowLeftIcon className="h-5 w-5 mr-2" />

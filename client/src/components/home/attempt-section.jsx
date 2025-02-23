@@ -57,7 +57,7 @@ export function TakeQuizSection() {
                 {quiz.title}
               </h3>
               <p className="text-gray-300 mb-6">{quiz.description}</p>
-              <Link to={"/quiz"}>
+              <Link to={"/quiz/1"}>
                 <button className="w-full bg-gradient-to-r from-yellow-500 to-pink-600 text-white px-4 py-3 rounded-lg font-semibold hover:from-yellow-600 hover:to-pink-700 transition duration-300 transform hover:scale-105">
                   Start Quiz
                 </button>

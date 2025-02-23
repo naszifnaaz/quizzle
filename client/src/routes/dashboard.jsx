@@ -177,7 +177,7 @@ function Dashboard() {
             <p className="text-xl mb-8">
               Sign in to create and participate in quizzes!
             </p>
-            <Link>
+            <Link to={"/login"}>
               <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
                 Sign In
               </button>

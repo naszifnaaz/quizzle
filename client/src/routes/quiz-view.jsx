@@ -11,6 +11,8 @@ import {
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { quizData } from "../data/quiz-data";
+import { useSelector } from "react-redux";
+import { Link } from "react-router-dom";
 
 export default function QuizView() {
   const [username, setUsername] = useState("");
@@ -21,7 +23,8 @@ export default function QuizView() {
   const [quizStarted, setQuizStarted] = useState(false);
   const [showFeedback, setShowFeedback] = useState({});
   const [quizStartTime, setQuizStartTime] = useState(null);
-  const { isSignedIn, user } = useUser();
+  const isLoggedIn = useSelector((store) => store.isLoggedIn);
+  const user = useSelector((store) => store.user);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -33,31 +36,12 @@ export default function QuizView() {
     }
   }, [timeLeft, quizStarted, showResults]);
 
-  useEffect(() => {
-    // Add a class to the body for global styles
-    document.body.classList.add(
-      "bg-gradient-to-br",
-      "from-indigo-900",
-      "to-purple-900",
-      "text-white"
-    );
-
-    return () => {
-      document.body.classList.remove(
-        "bg-gradient-to-br",
-        "from-indigo-900",
-        "to-purple-900",
-        "text-white"
-      );
-    };
-  }, []);
-
   const handleStartQuiz = (e) => {
     e.preventDefault();
-    if (isSignedIn) {
+    if (isLoggedIn) {
       setQuizStarted(true);
       setQuizStartTime(Date.now());
-      setUsername(user.username || user.firstName || "User");
+      setUsername(user.name || "User");
     }
   };
 
@@ -166,7 +150,7 @@ export default function QuizView() {
           </div>
           <form onSubmit={handleStartQuiz} className="space-y-4">
             <div>
-              {isSignedIn ? (
+              {isLoggedIn ? (
                 <motion.button
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -177,7 +161,11 @@ export default function QuizView() {
                 </motion.button>
               ) : (
                 <div className="space-y-4">
-                  <SignIn />
+                  <Link to={"/login"}>
+                    <button className="bg-gradient-to-r from-blue-500 to-purple-600 text-white px-6 py-3 rounded-full font-semibold hover:from-blue-600 hover:to-purple-700 transition duration-300 shadow-lg hover:shadow-xl transform hover:scale-105">
+                      Sign In
+                    </button>
+                  </Link>
                 </div>
               )}
             </div>

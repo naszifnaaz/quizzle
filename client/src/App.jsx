@@ -29,12 +29,12 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/reset-password" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/quiz/:id" element={<QuizDetails />} />
+        <Route path="/quiz/details/:id" element={<QuizDetails />} />
         <Route
           path="/report/:quizId/:username"
           element={<ParticipantReport />}
         />
-        <Route path="/quiz" element={<QuizView />} />
+        <Route path="/quiz/:id" element={<QuizView />} />
         <Route path="/quiz-results" element={<QuizResultPage />} />
       </Routes>
       <Toaster position="top-center" reverseOrder={false} />

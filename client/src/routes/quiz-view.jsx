@@ -9,12 +9,19 @@ import {
 } from "@heroicons/react/24/outline";
 
 import { motion, AnimatePresence } from "framer-motion";
-import { useNavigate } from "react-router-dom";
-import { quizData } from "../data/quiz-data";
-import { useSelector } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+//import { quizData } from "../data/quiz-data";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { getQuizById } from "../features/app.slice";
 
 export default function QuizView() {
+  const quizData = useSelector((store) => store.currentQuiz) || {};
+
+  useEffect(() => {
+    dispatch(getQuizById({ id, token }));
+  }, []);
+
   const [username, setUsername] = useState("");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -25,7 +32,13 @@ export default function QuizView() {
   const [quizStartTime, setQuizStartTime] = useState(null);
   const isLoggedIn = useSelector((store) => store.isLoggedIn);
   const user = useSelector((store) => store.user);
+  const token = useSelector((store) => store.token);
+
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
+
+  console.log(quizData);
 
   useEffect(() => {
     if (quizStarted && !showResults && timeLeft > 0) {

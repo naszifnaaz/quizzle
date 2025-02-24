@@ -42,7 +42,7 @@ export function Login() {
 
   return (
     <>
-      <div className="min-h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex">
+      <div className="h-screen bg-gradient-to-br from-indigo-900 to-purple-900 flex">
         <div className="w-full lg:w-1/2 flex flex-col p-8 lg:p-16 justify-between">
           <div>
             <Link
@@ -179,7 +179,7 @@ export function Login() {
             </form>
           </motion.div>
 
-          <div className="text-center text-gray-300 mt-8">
+          <div className="text-center text-gray-300">
             Don't have an account?{" "}
             <Link
               to="/register"
@@ -233,34 +233,3 @@ export function Login() {
     </>
   );
 }
-
-// Add this to your CSS/Tailwind config
-const styles = {
-  utilities: {
-    ".animate-blob": {
-      animation: "blob 7s infinite",
-    },
-    ".animation-delay-2000": {
-      "animation-delay": "2s",
-    },
-    ".animation-delay-4000": {
-      "animation-delay": "4s",
-    },
-  },
-  keyframes: {
-    blob: {
-      "0%": {
-        transform: "translate(0px, 0px) scale(1)",
-      },
-      "33%": {
-        transform: "translate(30px, -50px) scale(1.1)",
-      },
-      "66%": {
-        transform: "translate(-20px, 20px) scale(0.9)",
-      },
-      "100%": {
-        transform: "translate(0px, 0px) scale(1)",
-      },
-    },
-  },
-};

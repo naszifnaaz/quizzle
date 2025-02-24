@@ -123,7 +123,7 @@ exports.getQuizById = async (req, res) => {
     if (!quiz) {
       return res.status(404).json({ error: "Quiz not found" });
     }
-    res.status(200).json(quiz);
+    res.status(200).json({ currentQuiz: quiz });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

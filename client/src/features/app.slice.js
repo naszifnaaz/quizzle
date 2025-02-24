@@ -7,6 +7,7 @@ const initialState = {
   createdQuizzes: {},
   attemptedQuizzes: {},
   availableQuizzes: {},
+  currentQuiz: {},
   publishedURL: null,
   user: null,
   token: localStorage.getItem("token") || "",
@@ -144,6 +145,23 @@ export const publishQuiz = createAsyncThunk(
   }
 );
 
+// Get quiz by id
+export const getQuizById = createAsyncThunk(
+  "app/getQuizById",
+  async ({ id, token }, { rejectWithValue }) => {
+    try {
+      const response = await axios.get(`${DEV_URL}/api/quiz/${id}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const userSlice = createSlice({
   name: "app",
   initialState,
@@ -277,6 +295,18 @@ const userSlice = createSlice({
         state.publishedURL = action.payload.quizURL;
       })
       .addCase(publishQuiz.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload;
+      })
+      .addCase(getQuizById.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(getQuizById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentQuiz = action.payload.currentQuiz;
+      })
+      .addCase(getQuizById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
       });

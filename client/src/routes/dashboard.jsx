@@ -1,5 +1,6 @@
-import QuizCard from "../components/dashboard/quiz-card";
-import ParticipatedQuizCard from "../components/dashboard/participated-quiz-card";
+import CreatedQuizCard from "../components/dashboard/created-card";
+import ParticipatedQuizCard from "../components/dashboard/participated-card";
+import AvailableQuizCard from "../components/dashboard/available-card";
 import CreateQuizSlider from "../components/dashboard/create";
 import ToggleButton from "../components/dashboard/toggle-button";
 import { useState, useEffect } from "react";
@@ -22,8 +23,25 @@ function Dashboard() {
   const dispatch = useDispatch();
   const createdQuizzes =
     useSelector((store) => store.createdQuizzes.created) || [];
-  const participatedQuizzes =
-    useSelector((store) => store.attemptedQuizzes.attempted) || [];
+  // const participatedQuizzes =
+  //   useSelector((store) => store.attemptedQuizzes.attempted) || [];
+  const participatedQuizzes = [
+    {
+      quiz: {
+        id: "dummy-quiz-1",
+        title: "Sample Quiz Title",
+      },
+      score: 85,
+      timeTaken: 12,
+      rank: 3,
+      creator: {
+        name: "John Doe",
+        avatar: "https://api.dicebear.com/7.x/initials/svg?seed=test",
+      },
+      id: "dummy-participation-1",
+    },
+  ];
+
   const availableQuizzes =
     useSelector((store) => store.availableQuizzes.available) || [];
   const token = useSelector((store) => store.token);
@@ -113,15 +131,17 @@ function Dashboard() {
               {getQuizzesToDisplay().length > 0 ? (
                 getQuizzesToDisplay().map((quiz, index) => (
                   <motion.div
-                    key={quiz.id}
+                    key={index}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.5, delay: index * 0.1 }}
                   >
                     {selectedOption === "Attempts" ? (
                       <ParticipatedQuizCard quiz={quiz} />
+                    ) : selectedOption === "Available" ? (
+                      <AvailableQuizCard quiz={quiz} />
                     ) : (
-                      <QuizCard quiz={quiz} />
+                      <CreatedQuizCard quiz={quiz} />
                     )}
                   </motion.div>
                 ))

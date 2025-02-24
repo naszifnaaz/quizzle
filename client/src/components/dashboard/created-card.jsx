@@ -2,12 +2,27 @@ import {
   UserIcon,
   DocumentTextIcon,
   ClockIcon,
-  ChartBarIcon,
+  LinkIcon,
+  ClipboardDocumentIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import { useState } from "react";
 
-export default function QuizCard({ quiz, isParticipated = false }) {
+export default function QuizCard({ quiz }) {
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = async () => {
+    const quizLink = `${window.location.origin}/quiz/${quiz.id}`;
+    try {
+      await navigator.clipboard.writeText(quizLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
   return (
     <motion.div
       whileHover={{ scale: 1.05 }}
@@ -28,18 +43,25 @@ export default function QuizCard({ quiz, isParticipated = false }) {
             <ClockIcon className="h-5 w-5 mr-2 text-purple-400" />
             <span>{quiz.timeLimit} Minutes</span>
           </div>
-          {isParticipated && (
-            <>
-              <div className="flex items-center">
-                <ChartBarIcon className="h-5 w-5 mr-2 text-orange-400" />
-                <span>Score: {quiz.score}%</span>
-              </div>
-              <div className="flex items-center">
-                <ClockIcon className="h-5 w-5 mr-2 text-indigo-400" />
-                <span>Time Taken: {quiz.timeTaken} minutes</span>
-              </div>
-            </>
-          )}
+          <div className="flex items-center">
+            <LinkIcon className="h-5 w-5 mr-2 text-yellow-400" />
+            <div className="flex items-center gap-2">
+              <span className="truncate max-w-[150px]">
+                {`${window.location.origin}/quiz/${quiz.id}`}
+              </span>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={copyToClipboard}
+                className="text-blue-400 hover:text-blue-300"
+              >
+                <ClipboardDocumentIcon className="h-5 w-5" />
+              </motion.button>
+              {copied && (
+                <span className="text-xs text-green-400">Copied!</span>
+              )}
+            </div>
+          </div>
         </div>
       </div>
       <div className="bg-white bg-opacity-5 px-6 py-4">
@@ -48,14 +70,12 @@ export default function QuizCard({ quiz, isParticipated = false }) {
             className={`px-3 py-1 rounded-full text-sm font-semibold ${
               quiz.status === "Published"
                 ? "bg-green-400 bg-opacity-20 text-green-200"
-                : quiz.status === "Completed"
-                ? "bg-blue-400 bg-opacity-20 text-blue-200"
                 : "bg-yellow-400 bg-opacity-20 text-yellow-200"
             }`}
           >
             {quiz.status}
           </span>
-          <Link to={`/quiz/details/1`}>
+          <Link to={`/quiz/details/${quiz.id}`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}

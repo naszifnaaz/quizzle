@@ -2,7 +2,10 @@ import {
   DocumentTextIcon,
   ClockIcon,
   ChartBarIcon,
-  CalendarIcon,
+  TrophyIcon,
+  ArrowPathIcon,
+  ClipboardDocumentCheckIcon,
+  UserCircleIcon,
 } from "@heroicons/react/24/outline";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
@@ -19,10 +22,6 @@ export default function ParticipatedQuizCard({ quiz }) {
         </h3>
         <div className="flex flex-col space-y-2 text-sm text-gray-300">
           <div className="flex items-center">
-            <DocumentTextIcon className="h-5 w-5 mr-2 text-blue-400" />
-            <span>{quiz.quiz.questions.length} Questions</span>
-          </div>
-          <div className="flex items-center">
             <ChartBarIcon className="h-5 w-5 mr-2 text-orange-400" />
             <span>Score: {quiz.score}%</span>
           </div>
@@ -31,23 +30,42 @@ export default function ParticipatedQuizCard({ quiz }) {
             <span>Time Taken: {quiz.timeTaken} minutes</span>
           </div>
           <div className="flex items-center">
-            <CalendarIcon className="h-5 w-5 mr-2 text-green-400" />
-            <span>Completed on: {quiz.completedDate}</span>
+            <TrophyIcon className="h-5 w-5 mr-2 text-yellow-400" />
+            <span>Rank: #{quiz.rank} in Leaderboard</span>
+          </div>
+          <div className="flex items-center">
+            <UserCircleIcon className="h-5 w-5 mr-2 text-blue-400" />
+            <div className="flex items-center gap-2">
+              <img
+                src={quiz.creator.avatar || "/default-avatar.png"}
+                alt={quiz.creator.name}
+                className="w-6 h-6 rounded-full"
+              />
+              <span>Created by {quiz.creator.name}</span>
+            </div>
           </div>
         </div>
       </div>
       <div className="bg-white bg-opacity-5 px-6 py-4">
         <div className="flex justify-between items-center">
-          <span className="px-3 py-1 rounded-full text-sm font-semibold bg-blue-400 bg-opacity-20 text-blue-200">
-            Completed
-          </span>
-          <Link to={`/report/1/user1`}>
+          <Link to={`/quiz/${quiz.quiz.id}`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="text-blue-400 hover:text-blue-300 font-semibold transition duration-300 ease-in-out"
+              className="flex items-center gap-2 text-green-400 hover:text-green-300 font-semibold"
             >
-              View Results
+              <ArrowPathIcon className="h-5 w-5" />
+              Retry
+            </motion.button>
+          </Link>
+          <Link to={`/report/${quiz.id}`}>
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex items-center gap-2 text-blue-400 hover:text-blue-300 font-semibold"
+            >
+              <ClipboardDocumentCheckIcon className="h-5 w-5" />
+              See Report
             </motion.button>
           </Link>
         </div>

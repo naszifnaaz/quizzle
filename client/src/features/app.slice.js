@@ -148,13 +148,9 @@ export const publishQuiz = createAsyncThunk(
 // Get quiz by id
 export const getQuizById = createAsyncThunk(
   "app/getQuizById",
-  async ({ id, token }, { rejectWithValue }) => {
+  async (id, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${DEV_URL}/api/quiz/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(`${DEV_URL}/api/quiz/${id}`);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);

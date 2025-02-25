@@ -42,7 +42,7 @@ export default function AvailableQuizCard({ quiz }) {
       </div>
       <div className="bg-white bg-opacity-5 px-6 py-4">
         <div className="flex justify-end">
-          <Link to={`/quiz/${quiz.id}`}>
+          <Link to={`/quiz/${quiz._id}`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}

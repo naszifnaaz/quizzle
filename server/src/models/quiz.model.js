@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { v4: uuidv4 } = require("uuid");
 
 const optionSchema = new mongoose.Schema({
   id: String,
@@ -6,6 +7,10 @@ const optionSchema = new mongoose.Schema({
 });
 
 const questionSchema = new mongoose.Schema({
+  id: {
+    type: String,
+    default: uuidv4,
+  },
   text: String,
   options: [optionSchema],
   correctAnswers: [String],

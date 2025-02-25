@@ -75,7 +75,7 @@ export default function QuizCard({ quiz }) {
           >
             {quiz.status}
           </span>
-          <Link to={`/quiz/details/${quiz.id}`}>
+          <Link to={`/quiz/details/1`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}

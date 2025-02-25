@@ -58,7 +58,7 @@ export default function ParticipatedQuizCard({ quiz }) {
               Retry
             </motion.button>
           </Link>
-          <Link to={`/report/1/user`}>
+          <Link to={`/quiz-results`}>
             <motion.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}

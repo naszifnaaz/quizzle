@@ -119,7 +119,10 @@ exports.submitQuiz = async (req, res) => {
 // Get quiz details by ID
 exports.getQuizById = async (req, res) => {
   try {
-    const quiz = await Quiz.findById(req.params.id).populate("creator", "name");
+    const quiz = await Quiz.findById(req.params.id).populate(
+      "creator",
+      "name avatar"
+    );
     if (!quiz) {
       return res.status(404).json({ error: "Quiz not found" });
     }

@@ -6,6 +6,7 @@ import {
   CheckIcon,
   BookOpenIcon,
 } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 export default function QuizContent({
   quizData,
@@ -19,6 +20,11 @@ export default function QuizContent({
   setShowFeedback,
   handleSubmitQuiz,
 }) {
+  const [questionImage] = useState({
+    hasImage: true,
+    image:
+      "https://miro.medium.com/v2/resize:fit:1400/1*ucL7YQ2v8aaOy426soLPZA.png",
+  });
   const currentQuestionData = quizData.questions[currentQuestion];
   const userAnswersForCurrentQuestion =
     userAnswers[currentQuestionData.id] || [];
@@ -111,6 +117,15 @@ export default function QuizContent({
             Question {currentQuestion + 1} of {quizData.questions.length}
           </h2>
           <p className="text-gray-300 mb-2">{currentQuestionData.text}</p>
+
+          {questionImage.hasImage && (
+            <img
+              src={questionImage.image}
+              alt="Question illustration"
+              className="my-4 rounded-lg border border-gray-700 w-full object-cover max-h-64"
+            />
+          )}
+
           {currentQuestionData.multipleCorrect && (
             <p className="text-sm text-blue-400 mb-4 flex items-center">
               <BookOpenIcon className="h-4 w-4 mr-2" />

@@ -7,26 +7,27 @@ import QuizContent from "../components/quiz-view/quiz-content";
 import { quizData } from "../data/quiz-data";
 
 export default function QuizView() {
-  const [username, setUsername] = useState("");
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const isLoggedIn = useSelector((store) => store.isLoggedIn);
+  const isLoading = useSelector((store) => store.isLoading);
+  const user = useSelector((store) => store.user);
+  const token = useSelector((store) => store.token);
+  const currentQuiz = useSelector((store) => store.currentQuiz);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
   const [showResults, setShowResults] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(quizData.timeLimit * 60);
+  const [timeLeft, setTimeLeft] = useState(
+    currentQuiz ? currentQuiz.timeLimit * 60 : 60
+  );
   const [quizStarted, setQuizStarted] = useState(false);
   const [showFeedback, setShowFeedback] = useState({});
   const [quizStartTime, setQuizStartTime] = useState(null);
 
-  const isLoggedIn = useSelector((store) => store.isLoggedIn);
-  const user = useSelector((store) => store.user);
-  const token = useSelector((store) => store.token);
-
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const { id } = useParams();
-
   useEffect(() => {
-    dispatch(getQuizById({ id, token }));
-  }, [dispatch, id, token]);
+    dispatch(getQuizById(id));
+  }, [dispatch, id]);
 
   useEffect(() => {
     if (quizStarted && !showResults && timeLeft > 0) {
@@ -42,7 +43,6 @@ export default function QuizView() {
     if (isLoggedIn) {
       setQuizStarted(true);
       setQuizStartTime(Date.now());
-      setUsername(user.name || "User");
     }
   };
 
@@ -69,6 +69,8 @@ export default function QuizView() {
     setQuizStartTime(Date.now());
   };
 
+  if (!user || !currentQuiz || isLoading) return <h1>Loading..</h1>;
+
   if (showResults) {
     navigate("/quiz-results");
   }
@@ -77,7 +79,7 @@ export default function QuizView() {
     <>
       {!quizStarted ? (
         <StartScreen
-          quizData={quizData}
+          quizData={currentQuiz}
           isLoggedIn={isLoggedIn}
           handleStartQuiz={handleStartQuiz}
         />
@@ -86,7 +88,7 @@ export default function QuizView() {
           quizData={quizData}
           currentQuestion={currentQuestion}
           userAnswers={userAnswers}
-          username={username}
+          username={user.name}
           timeLeft={timeLeft}
           showFeedback={showFeedback}
           setCurrentQuestion={setCurrentQuestion}

@@ -7,7 +7,7 @@ const initialState = {
   createdQuizzes: {},
   attemptedQuizzes: {},
   availableQuizzes: {},
-  currentQuiz: {},
+  currentQuiz: null,
   publishedURL: null,
   user: null,
   token: localStorage.getItem("token") || "",
@@ -188,7 +188,7 @@ const userSlice = createSlice({
       })
 
       .addCase(userLogin.rejected, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.error = null;
         state.user = {};
         state.token = "";
@@ -211,23 +211,29 @@ const userSlice = createSlice({
       })
 
       .addCase(userRegister.rejected, (state, action) => {
-        state.isLoading = true;
+        state.isLoading = false;
         state.error = null;
         state.user = {};
         state.token = "";
         localStorage.removeItem("token");
       })
 
+      .addCase(initializeUser.pending, (state) => {
+        state.isLoading = true;
+      })
+
       .addCase(initializeUser.fulfilled, (state, action) => {
+        state.isLoading = false;
         state.isLoggedIn = true;
         state.user = action.payload.user;
         state.token = action.payload.token;
       })
       .addCase(initializeUser.rejected, (state) => {
+        state.isLoading = false;
         state.isLoggedIn = false;
         state.user = null;
         state.token = "";
-        localStorage.removeItem("token"); // Remove invalid token
+        localStorage.removeItem("token");
       })
 
       // Handle fetchMyQuizzes

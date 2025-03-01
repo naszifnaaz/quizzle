@@ -7,10 +7,6 @@ const optionSchema = new mongoose.Schema({
 });
 
 const questionSchema = new mongoose.Schema({
-  id: {
-    type: String,
-    default: uuidv4,
-  },
   text: String,
   options: [optionSchema],
   correctAnswers: [String],

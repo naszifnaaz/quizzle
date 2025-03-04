@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from "react-redux";
 import { getQuizById } from "../features/app.slice";
 import StartScreen from "../components/quiz-view/start-screen";
 import QuizContent from "../components/quiz-view/quiz-content";
-import { quizData } from "../data/quiz-data";
 
 export default function QuizView() {
   const { id } = useParams();
@@ -13,7 +12,6 @@ export default function QuizView() {
   const isLoggedIn = useSelector((store) => store.isLoggedIn);
   const isLoading = useSelector((store) => store.isLoading);
   const user = useSelector((store) => store.user);
-  const token = useSelector((store) => store.token);
   const currentQuiz = useSelector((store) => store.currentQuiz);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -48,7 +46,7 @@ export default function QuizView() {
 
   const handleSubmitQuiz = () => {
     const allAnswers = { ...userAnswers };
-    quizData.questions.forEach((question) => {
+    currentQuiz.questions.forEach((question) => {
       if (!allAnswers[question.id]) {
         allAnswers[question.id] = [];
       }
@@ -64,7 +62,7 @@ export default function QuizView() {
     setCurrentQuestion(0);
     setUserAnswers({});
     setShowResults(false);
-    setTimeLeft(quizData.timeLimit * 60);
+    setTimeLeft(currentQuiz.timeLimit * 60);
     setShowFeedback({});
     setQuizStartTime(Date.now());
   };
@@ -85,7 +83,7 @@ export default function QuizView() {
         />
       ) : (
         <QuizContent
-          quizData={quizData}
+          quizData={currentQuiz}
           currentQuestion={currentQuestion}
           userAnswers={userAnswers}
           username={user.name}

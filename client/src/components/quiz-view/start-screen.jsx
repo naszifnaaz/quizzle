@@ -27,7 +27,7 @@ export default function StartScreen({ quizData, isLoggedIn, handleStartQuiz }) {
     minute: "2-digit",
   });
 
-  if (!quizData) return <div>Loading quiz data...</div>;
+  if (isLoading) return <div className="spinner">Loading quiz...</div>;
 
   return (
     <motion.div

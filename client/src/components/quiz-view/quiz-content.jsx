@@ -20,21 +20,25 @@ export default function QuizContent({
   setShowFeedback,
   handleSubmitQuiz,
 }) {
+  const quiz = quizData;
+
+  // remove once we add image upload support on question creation
   const [questionImage] = useState({
     hasImage: true,
     image:
       "https://miro.medium.com/v2/resize:fit:1400/1*ucL7YQ2v8aaOy426soLPZA.png",
   });
-  const currentQuestionData = quizData.questions[currentQuestion];
+
+  const currentQuestionData = quiz.questions[currentQuestion];
   const userAnswersForCurrentQuestion =
-    userAnswers[currentQuestionData.id] || [];
+    userAnswers[currentQuestionData._id] || [];
   const selectionsLeft = currentQuestionData.multipleCorrect
     ? currentQuestionData.correctAnswers.length -
       userAnswersForCurrentQuestion.length
     : 1 - userAnswersForCurrentQuestion.length;
 
   const handleAnswerSelect = (questionId, answerId) => {
-    const question = quizData.questions.find((q) => q.id === questionId);
+    const question = quiz.questions.find((q) => q._id === questionId);
     if (!question) return;
 
     setUserAnswers((prev) => {
@@ -66,11 +70,11 @@ export default function QuizContent({
   };
 
   const handleNextQuestion = () => {
-    if (currentQuestion < quizData.questions.length - 1) {
+    if (currentQuestion < quiz.questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setShowFeedback((prev) => ({
         ...prev,
-        [quizData.questions[currentQuestion].id]: true,
+        [quiz.questions[currentQuestion]._id]: true,
       }));
     }
   };
@@ -102,7 +106,7 @@ export default function QuizContent({
       >
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-2xl font-bold text-white bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-purple-600">
-            {quizData.title}
+            {quiz.title}
           </h1>
           <div className="flex items-center space-x-4">
             <span className="text-sm text-gray-300">Welcome, {username}!</span>
@@ -114,7 +118,7 @@ export default function QuizContent({
         </div>
         <div className="mb-6">
           <h2 className="text-lg font-semibold mb-4 text-white">
-            Question {currentQuestion + 1} of {quizData.questions.length}
+            Question {currentQuestion + 1} of {quiz.questions.length}
           </h2>
           <p className="text-gray-300 mb-2">{currentQuestionData.text}</p>
 
@@ -141,7 +145,7 @@ export default function QuizContent({
                 const isCorrect = currentQuestionData.correctAnswers.includes(
                   option.id
                 );
-                const showOptionFeedback = showFeedback[currentQuestionData.id];
+                const showOptionFeedback = showFeedback[currentQuestionData._id];
                 let bgColor = "bg-white bg-opacity-5 hover:bg-opacity-10";
                 if (showOptionFeedback) {
                   bgColor = isCorrect
@@ -159,7 +163,7 @@ export default function QuizContent({
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() =>
-                      handleAnswerSelect(currentQuestionData.id, option.id)
+                      handleAnswerSelect(currentQuestionData._id, option.id)
                     }
                     disabled={showOptionFeedback}
                     className={`w-full p-4 ${bgColor} border border-gray-700 rounded-lg flex items-center justify-between transition-colors duration-200 text-white`}
@@ -191,7 +195,7 @@ export default function QuizContent({
             <ChevronLeftIcon className="h-5 w-5 mr-1" />
             Previous
           </motion.button>
-          {currentQuestion === quizData.questions.length - 1 ? (
+          {currentQuestion === quiz.questions.length - 1 ? (
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}

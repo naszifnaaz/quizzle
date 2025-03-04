@@ -22,7 +22,7 @@ export const userLogin = createAsyncThunk(
   "app/login",
   async (user, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${PROD_URL}/api/user/login`, user);
+      const response = await axios.post(`${DEV_URL}/api/user/login`, user);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -34,7 +34,7 @@ export const userRegister = createAsyncThunk(
   "app/register",
   async (user, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${PROD_URL}/api/user/register`, user);
+      const response = await axios.post(`${DEV_URL}/api/user/register`, user);
       return response.data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -49,7 +49,7 @@ export const initializeUser = createAsyncThunk(
     if (!token) return rejectWithValue("No token found");
 
     try {
-      const response = await axios.get(`${PROD_URL}/api/user/me`, {
+      const response = await axios.get(`${DEV_URL}/api/user/me`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       return response.data;
@@ -64,7 +64,7 @@ export const fetchMyQuizzes = createAsyncThunk(
   "app/fetchMyQuizzes",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${PROD_URL}/api/user/my-quizzes`, {
+      const response = await axios.get(`${DEV_URL}/api/user/my-quizzes`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -80,7 +80,7 @@ export const fetchMyAttempts = createAsyncThunk(
   "app/fetchMyAttempts",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${PROD_URL}/api/user/my-attempts`, {
+      const response = await axios.get(`${DEV_URL}/api/user/my-attempts`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -96,7 +96,7 @@ export const fetchAvailableQuizzes = createAsyncThunk(
   "app/fetchAvailableQuizzes",
   async (token, { rejectWithValue }) => {
     try {
-      const response = await axios.get(`${PROD_URL}/api/user/available`, {
+      const response = await axios.get(`${DEV_URL}/api/user/available`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -113,7 +113,7 @@ export const saveQuizDraft = createAsyncThunk(
   "app/saveQuizDraft",
   async ({ token, payload }, { rejectWithValue }) => {
     try {
-      const response = await axios.post(`${PROD_URL}/api/quiz/draft`, payload, {
+      const response = await axios.post(`${DEV_URL}/api/quiz/draft`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -130,7 +130,7 @@ export const publishQuiz = createAsyncThunk(
   async ({ token, payload }, { rejectWithValue }) => {
     try {
       const response = await axios.post(
-        `${PROD_URL}/api/quiz/publish`,
+        `${DEV_URL}/api/quiz/publish`,
         payload,
         {
           headers: {

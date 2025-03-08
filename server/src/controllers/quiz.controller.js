@@ -67,9 +67,14 @@ exports.submitQuiz = async (req, res) => {
   try {
     const { answers, timeTaken } = req.body;
     const quizId = req.params.id;
-    const user = await User.findById(req.auth._id);
 
+    // Ensure user and quiz exist
+    const user = await User.findById(req.auth._id);
     const quiz = await Quiz.findById(quizId);
+
+    if (!user || !quiz) {
+      return res.status(404).json({ error: "User or Quiz not found" });
+    }
 
     // Calculate score
     let score = 0;
@@ -77,19 +82,33 @@ exports.submitQuiz = async (req, res) => {
       const question = quiz.questions.find(
         (q) => q._id.toString() === answer.questionId
       );
+
+      if (!question) {
+        console.error(`Question with ID ${answer.questionId} not found`);
+        return {
+          question: "Unknown Question",
+          userAnswer: answer.selectedOptions,
+          correctAnswer: [],
+          isCorrect: false,
+        };
+      }
+
+      // Compare sorted arrays to check if the answer is correct
       const isCorrect =
         JSON.stringify(answer.selectedOptions.sort()) ===
-        JSON.stringify(question.correctAnswers.sort());
+        JSON.stringify((question.correctAnswers || []).sort());
+
       if (isCorrect) score++;
 
       return {
         question: question.text,
         userAnswer: answer.selectedOptions,
-        correctAnswer: question.correctAnswers,
+        correctAnswer: question.correctAnswers || [],
         isCorrect,
       };
     });
 
+    // Save attempt in the database
     const attempt = new Attempt({
       user: user._id,
       quiz: quizId,
@@ -100,18 +119,20 @@ exports.submitQuiz = async (req, res) => {
 
     await attempt.save();
 
-    // Add attempt to user's attempted quizzes
+    // Update user attempted quizzes
     await User.findByIdAndUpdate(user._id, {
-      $push: { attemptedQuizzes: attempt._id },
+      $push: { attempted: attempt._id },
     });
 
-    // Increment participants count
+    // Increment participants count in the quiz, and add into attempts
     await Quiz.findByIdAndUpdate(quizId, {
       $inc: { participants: 1 },
+      $push: { attempted: attempt._id },
     });
 
     res.status(200).json(attempt);
   } catch (error) {
+    console.error("Server error:", error);
     res.status(500).json({ error: error.message });
   }
 };

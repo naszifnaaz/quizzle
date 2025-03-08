@@ -36,6 +36,7 @@ const quizSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
+    participants: { type: Number, default: 0 },
     questions: [questionSchema],
     timeLimit: {
       type: Number,

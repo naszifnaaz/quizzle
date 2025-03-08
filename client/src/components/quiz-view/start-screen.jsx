@@ -14,6 +14,7 @@ export default function StartScreen({ quizData, isLoggedIn, handleStartQuiz }) {
     desc = "",
     questions = [],
     timeLimit = 0,
+    participants = 0,
     attempts = [],
     createdAt = new Date().toISOString(),
     creator = {},
@@ -79,7 +80,7 @@ export default function StartScreen({ quizData, isLoggedIn, handleStartQuiz }) {
           </div>
           <div className="flex flex-col items-center p-3 bg-indigo-900/20 rounded-lg">
             <span className="text-2xl font-bold text-indigo-100">
-              {attempts.length}
+              {participants}
             </span>
             <span className="text-xs text-indigo-300">Attempts</span>
           </div>

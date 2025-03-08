@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { getQuizById } from "../features/app.slice";
+import { getQuizById, submitQuiz } from "../features/app.slice";
 import StartScreen from "../components/quiz-view/start-screen";
 import QuizContent from "../components/quiz-view/quiz-content";
 
@@ -12,6 +12,7 @@ export default function QuizView() {
   const isLoggedIn = useSelector((store) => store.isLoggedIn);
   const isLoading = useSelector((store) => store.isLoading);
   const user = useSelector((store) => store.user);
+  const token = useSelector((store) => store.token);
   const currentQuiz = useSelector((store) => store.currentQuiz);
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [userAnswers, setUserAnswers] = useState({});
@@ -44,18 +45,30 @@ export default function QuizView() {
     }
   };
 
-  const handleSubmitQuiz = () => {
+  const handleSubmitQuiz = async () => {
+    // Ensure all questions have an answer (empty array if not answered)
     const allAnswers = { ...userAnswers };
     currentQuiz.questions.forEach((question) => {
-      if (!allAnswers[question.id]) {
-        allAnswers[question.id] = [];
+      if (!allAnswers[question._id]) {
+        allAnswers[question._id] = [];
       }
     });
+
+    // Set user answers before submitting
     setUserAnswers(allAnswers);
     setShowResults(true);
+
+    // Calculate time taken
     const timeTaken = Math.floor((Date.now() - quizStartTime) / 1000);
-    setTimeLeft(timeTaken);
-    console.log(allAnswers);
+    setTimeLeft(timeTaken); // Optional: adjust if necessary
+
+    // Format answers correctly
+    const answers = currentQuiz.questions.map((question) => ({
+      questionId: question._id, // Ensure correct ID format
+      selectedOptions: allAnswers[question._id] || [],
+    }));
+
+    dispatch(submitQuiz({ id, token, answers, timeTaken }));
   };
 
   const handleRetryQuiz = () => {

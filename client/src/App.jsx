@@ -13,6 +13,7 @@ import { ResetPassword } from "./routes/reset-password";
 import { NavBar } from "./components/shared/navbar";
 import { useDispatch } from "react-redux";
 import { initializeUser } from "./features/app.slice";
+import ProfileSettings from "./routes/profile";
 
 export default function App() {
   const dispatch = useDispatch();
@@ -36,6 +37,7 @@ export default function App() {
         />
         <Route path="/quiz/:id" element={<QuizView />} />
         <Route path="/quiz-results" element={<QuizResultPage />} />
+        <Route path="/profile" element={<ProfileSettings />} />
       </Routes>
       <Toaster position="top-center" reverseOrder={false} />
     </div>

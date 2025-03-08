@@ -145,6 +145,29 @@ export const publishQuiz = createAsyncThunk(
   }
 );
 
+export const submitQuiz = createAsyncThunk(
+  "quiz/submit",
+  async ({ id, token, answers, timeTaken }, { rejectWithValue }) => {
+    try {
+      const response = await axios.post(
+        `${DEV_URL}/api/quiz/${id}/submit`,
+        {
+          answers,
+          timeTaken,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 // Get quiz by id
 export const getQuizById = createAsyncThunk(
   "app/getQuizById",
@@ -311,6 +334,15 @@ const userSlice = createSlice({
       .addCase(getQuizById.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload;
+      })
+      .addCase(submitQuiz.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(submitQuiz.fulfilled, (state) => {
+        state.isLoading = false;
+      })
+      .addCase(submitQuiz.rejected, (state) => {
+        state.isLoading = false;
       });
   },
 });

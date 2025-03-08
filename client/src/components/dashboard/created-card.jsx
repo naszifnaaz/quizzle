@@ -37,7 +37,7 @@ export default function QuizCard({ quiz }) {
           </div>
           <div className="flex items-center">
             <UserIcon className="h-5 w-5 mr-2 text-green-400" />
-            <span>{quiz.attempts.length} Participants</span>
+            <span>{quiz.participants} Participants</span>
           </div>
           <div className="flex items-center">
             <ClockIcon className="h-5 w-5 mr-2 text-purple-400" />

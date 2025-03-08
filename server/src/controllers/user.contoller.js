@@ -55,7 +55,9 @@ exports.getMyAttempts = async (req, res) => {
 exports.getAvailableQuizzes = async (req, res) => {
   try {
     const available =
-      (await Quiz.find({ status: "Published" }).populate("creator")) || [];
+      (await Quiz.find({ status: "Published" })
+        .populate("creator")
+        .sort({ createdAt: -1 })) || [];
     res.status(200).json({
       count: available.length,
       available,
